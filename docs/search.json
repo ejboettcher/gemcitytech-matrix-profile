@@ -1,0 +1,611 @@
+[
+  {
+    "objectID": "talk.html#matrix-profile",
+    "href": "talk.html#matrix-profile",
+    "title": "Matrix Profile",
+    "section": "Matrix Profile",
+    "text": "Matrix Profile\nOutlinY\n\nSTUMPy\nWhat is a Matrix Profile\nWhy would I use this\nExamples: Pattern Matching\nExamples: Solar Flares\nUpcoming talks"
+  },
+  {
+    "objectID": "talk.html#stumpy",
+    "href": "talk.html#stumpy",
+    "title": "Matrix Profile",
+    "section": "Stumpy",
+    "text": "Stumpy\nSTUMPY is a powerful and scalable Python library (built by Ameritrade) that efficiently computes something called the matrix profile, which is just an academic way of saying “for every (green) subsequence within your time series, automatically identify its corresponding nearest-neighbor (grey)”:\n\nOnce you’ve computed your matrix profile (middle panel above) it can then be used for a variety of time series data mining tasks such as:"
+  },
+  {
+    "objectID": "talk.html#what-is-a-matrix-profile.",
+    "href": "talk.html#what-is-a-matrix-profile.",
+    "title": "Matrix Profile",
+    "section": "What is a Matrix Profile.",
+    "text": "What is a Matrix Profile.\nLets take a walk through a tutorial\n\nThe Matrix Profile"
+  },
+  {
+    "objectID": "talk.html#thank-you",
+    "href": "talk.html#thank-you",
+    "title": "Matrix Profile",
+    "section": "Thank you",
+    "text": "Thank you\nUpcoming talks\n\nSept 19th: Tutorial on ML technique (STUMP) for time series data.\nOct 17th: Three speakers on Diffusion Models\nNov. 21st: Duel numbers and Auto Differentiation.\nDec TBD: Holiday Party\n\nLastly, the 3rd annual AI art contest from Nov - Dec 5th is back!\nRules are simple:\nPost a Dayton Themed AI generated art on the GemCity.TECH discord server.\nWinner is announced at the GemCity.TECH holiday party.\nQuestions\n\n\n\n\n\nGem City Tech ML/AI"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#laying-the-foundation",
+    "href": "tutorial/TheMatrixProfile.html#laying-the-foundation",
+    "title": "The Matrix Profile",
+    "section": "Laying the Foundation",
+    "text": "Laying the Foundation\nThe STUMPY library efficiently computes something called a matrix profile, a vector that stores the z-normalized Euclidean distance between any subsequence within a time series and its nearest neighbor.\nTo fully understand what this means, let’s take a step back and start with a simple illustrative example along with a few basic definitions:"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#time-series-with-length-n-13",
+    "href": "tutorial/TheMatrixProfile.html#time-series-with-length-n-13",
+    "title": "The Matrix Profile",
+    "section": "Time Series with Length n = 13",
+    "text": "Time Series with Length n = 13\ntime_series = [0, 1, 3, 2, 9, 1, 14, 15, 1, 2, 2, 10, 7]\nn = len(time_series)\nTo analyze this time series with length n = 13, we could visualize the data or calculate global summary statistics (i.e., mean, median, mode, min, max). If you had a much longer time series, then you may even feel compelled to build an ARIMA model, perform anomaly detection, or attempt a forecasting model but these methods can be complicated and may often have false positives or no interpretable insights.\n\nTime Series VisualizationHowever, if we were to apply Occam’s Razor, then what is the most simple and intuitive approach that we could take analyze to this time series?\nTo answer this question, let’s start with our first defintion:"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#subsequence",
+    "href": "tutorial/TheMatrixProfile.html#subsequence",
+    "title": "The Matrix Profile",
+    "section": "Subsequence",
+    "text": "Subsequence\na part or section of the full time series\nThe following are all considered subsequences of our time_series since they can all be found in the time series above."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#euclidean-distance",
+    "href": "tutorial/TheMatrixProfile.html#euclidean-distance",
+    "title": "The Matrix Profile",
+    "section": "Euclidean Distance",
+    "text": "Euclidean Distance\nthe straight-line distance between two points\n\nEuclidean Distanceimport math\n\nD = 0\nfor k in range(m):\n    D += (time_series[i+k] - time_series[j+k])**2\nprint(f\"The square root of {D} = {math.sqrt(D)}\")\nThe square root of 67 = 8.18535277187245"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#distance-profile---pairwise-euclidean-distances",
+    "href": "tutorial/TheMatrixProfile.html#distance-profile---pairwise-euclidean-distances",
+    "title": "The Matrix Profile",
+    "section": "Distance Profile - Pairwise Euclidean Distances",
+    "text": "Distance Profile - Pairwise Euclidean Distances\n\nPairwise Euclidean Distance"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#distance-matrix",
+    "href": "tutorial/TheMatrixProfile.html#distance-matrix",
+    "title": "The Matrix Profile",
+    "section": "Distance Matrix",
+    "text": "Distance Matrix\nIf we take all of the distance profiles that were computed for each reference subsequence and stack them one on top of each other then we get something called a distance matrix.\n\nDistance Matrix"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#matrix-profile",
+    "href": "tutorial/TheMatrixProfile.html#matrix-profile",
+    "title": "The Matrix Profile",
+    "section": "Matrix Profile",
+    "text": "Matrix Profile\nA matrix profile is a vector that stores the z-normalized Euclidean distance between any subsequence within a time series and its nearest neighbor.\n\n\nEasy peasy"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#the-real-problem---the-brute-force-approach",
+    "href": "tutorial/TheMatrixProfile.html#the-real-problem---the-brute-force-approach",
+    "title": "The Matrix Profile",
+    "section": "The Real Problem - The Brute Force Approach",
+    "text": "The Real Problem - The Brute Force Approach\nNow, it might seem pretty straightforward at this point but…\n\nWe need to do is consider how to compute the full distance matrix efficiently.\nLet’s start with the brute force approach:\nfor i in range(n-m+1):\n    for j in range(n-m+1):\n        D = 0\n        for k in range(m):\n            D += (time_series[i+k] - time_series[j+k])**2\n        D = math.sqrt(D)\nAt first glance, this may not look too bad but…\n if we start considering both the computational complexity as well as the spatial complexity then we begin to understand the real problem.\nIt turns out that, for longer time series (i.e., n &gt;&gt; 10,000) the computational complexity is \\(O(n^2m)\\) (as evidenced by the three for loops in the code above) and …\nthe spatial complexity for storing the full distance matrix is \\(O(n^2)\\)."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#stumpy",
+    "href": "tutorial/TheMatrixProfile.html#stumpy",
+    "title": "The Matrix Profile",
+    "section": "STUMPY",
+    "text": "STUMPY\nIn the fall of 2016, researchers from the University of California, Riverside and the University of New Mexico published a beautiful set of back-to-back papers that described an exact method called STOMP for computing the matrix profile for any time series with a computational complexity of \\(O(n^2)\\)!\n\nSTUMPY Developers\nWith the academics, data scientists, and developers in mind, STUMPY developers have taken these concepts and created open sourced STUMPY.\nA powerful and scalable library that efficiently computes the matrix profile according to this published research.\nAnd, thanks to other open source software such as Numba and Dask, their implementation is highly parallelized (for a single server with multiple CPUs or, alternatively, multiple GPUs), highly distributed (with multiple CPUs across multiple servers). We’ve tested STUMPY on as many as 256 CPU cores (spread across 32 servers) or 16 NVIDIA GPU devices (on the same DGX-2 server) and have achieved similar performance to the published GPU-STOMP work."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#conclusion",
+    "href": "tutorial/TheMatrixProfile.html#conclusion",
+    "title": "The Matrix Profile",
+    "section": "Conclusion",
+    "text": "Conclusion\nAccording to the original authors, “these are the best ideas in times series data mining in the last two decades” and “given the matrix profile, most time series data mining problems are trivial to solve in a few lines of code”."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#additional-notes",
+    "href": "tutorial/TheMatrixProfile.html#additional-notes",
+    "title": "The Matrix Profile",
+    "section": "Additional Notes",
+    "text": "Additional Notes\nFor the sake of completeness, we’ll provide a few more comments for those of you who’d like to compare your own matrix profile implementation to STUMPY. However, due to the many details that are omitted in the original papers, we strongly encourage you to use STUMPY.\nIn our explanation above, we’ve only excluded the trivial match from consideration. However, this is insufficient since nearby subsequences (i.e., i ± 1) are likely highly similar and we need to expand this to a larger “exclusion zone” relative to the diagonal trivial match. Here, we can visualize what different exclusion zones look like:\n\nExclusion ZoneHowever, in practice, it has been found that an exclusion zone of i ± int(np.ceil(m / 4)) works well (where m is the subsequence window size) and the distances computed in this region are is set to np.inf before the matrix profile value is extracted for the ith subsequence. Thus, the larger the window size is, the larger the exclusion zone will be. Additionally, note that, since NumPy indexing has an inclusive start index but an exlusive stop index, the proper way to ensure a symmetrical exclusion zone is:\nexcl_zone = int(np.ceil(m / 4))\nzone_start = i - excl_zone\nzone_end = i + excl_zone + 1  # Notice that we add one since this is exclusive\ndistance_profile[zone_start : zone_end] = np.inf\nFinally, it is very uncommon for users to need to change the default exclusion zone. However, in exceptionally rare cases, the exclusion zone can be changed globally in STUMPY through the config.STUMPY_EXCL_ZONE_DENOM parameter where all exclusion zones are computed as i ± int(np.ceil(m / config.STUMPY_EXCL_ZONE_DENOM)):\nimport stumpy\nfrom stumpy import config\n\nconfig.STUMPY_EXCL_ZONE_DENOM = 4  # The exclusion zone is i ± int(np.ceil(m / 4)) and is the same as the default setting\nmp = stumpy.stump(T, m)\n\nconfig.STUMPY_EXCL_ZONE_DENOM = 1  # The exclusion zone is i ± m\nmp = stumpy.stump(T, m)\n\nconfig.STUMPY_EXCL_ZONE_DENOM = np.inf  # The exclusion zone is i ± 0 and is the same as applying no exclusion zone\nmp = stumpy.stump(T, m)"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#resources",
+    "href": "tutorial/TheMatrixProfile.html#resources",
+    "title": "The Matrix Profile",
+    "section": "Resources",
+    "text": "Resources\nSTUMPY Documentation\nSTUMPY Matrix Profile Github Code Repository\n\n\n\n\nGem City Tech ML/AI"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#forecasting-web-query-data-with-anchored-time-series-chains-atsc",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#forecasting-web-query-data-with-anchored-time-series-chains-atsc",
+    "title": "Time Series Chanes",
+    "section": "Forecasting Web Query Data with Anchored Time Series Chains (ATSC)",
+    "text": "Forecasting Web Query Data with Anchored Time Series Chains (ATSC)\nThis example is adapted from the Web Query Volume case study: “The web as a jungle: Nonlinear dynamical systems for co-evolving online activities” and utilizes the main takeaways from the Matrix Profile VII research paper."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#getting-started",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#getting-started",
+    "title": "Time Series Chanes",
+    "section": "Getting Started",
+    "text": "Getting Started\nLet’s import the packages that we’ll need to load, analyze, and plot the data.\n%matplotlib inline\n\nimport pandas as pd\nimport numpy as np\nimport stumpy\nfrom scipy.io import loadmat\nimport matplotlib.pyplot as plt\nfrom matplotlib.patches import Rectangle, FancyArrowPatch\nimport itertools\n\nplt.style.use('https://raw.githubusercontent.com/TDAmeritrade/stumpy/main/docs/stumpy.mplstyle')"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#what-are-time-series-chains",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#what-are-time-series-chains",
+    "title": "Time Series Chanes",
+    "section": "What are Time Series Chains?",
+    "text": "What are Time Series Chains?\nTime series chains may be informally considered as motifs that evolve or drift in some direction over time. The figure below illustrates the difference between time series motifs (left) and time series chains (right).\nx = np.random.rand(20)\ny = np.random.rand(20)\nn = 10\nmotifs_x = 0.5 * np.ones(n) + np.random.uniform(-0.05, 0.05, n)\nmotifs_y = 0.5 * np.ones(n) + np.random.uniform(-0.05, 0.05, n)\nsin_x = np.linspace(0, np.pi/2, n+1)\nsin_y = np.sin(sin_x)/4\nchains_x = 0.5 * np.ones(n+1) + 0.02 * np.arange(n+1)\nchains_y = 0.5 * np.ones(n+1) + sin_y\nfig, axes = plt.subplots(nrows=1, ncols=2)\naxes[0].scatter(x, y, color='lightgrey')\naxes[0].scatter(motifs_x, motifs_y, color='red')\naxes[1].scatter(x, y, color='lightgrey')\naxes[1].scatter(chains_x[0], chains_y[0], edgecolor='red', color='white')\naxes[1].scatter(chains_x[1:n], chains_y[1:n], color='red')\naxes[1].scatter(chains_x[n], chains_y[n], edgecolor='red', color='white', marker='*', s=200)\nplt.show()\n\npngAbove, we are visualizing time series subsequences as points in high-dimensional space. Shown on the left is a time series motif and it can be thought of as a collection of points that approximate a platonic ideal. In contrast, depicted on the right, is a time series chain and it may be thought of as an evolving trail of points in the space. Here, the open red circle represents the first link in the chain, the anchor. Both motifs and chains have the property that each subsequence is relatively close to its nearest neighbor. However, the motif set (left) also has a relatively small diameter. In contrast, the set of points in a chain (right) has a diameter that is much larger than the mean of each member’s distance to its nearest neighbor and, moreover, the chain has the important property of directionality. For example, in the case of a motif, if an additional member was added to the motif set, its location will also be somewhere near the platonic ideal, but independent of the previous subsequences. In contrast, in the case of a chain, the location of the next member of the chain would be somewhere after the last red circle, possibly where the open red star is located."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#a-simplified-example",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#a-simplified-example",
+    "title": "Time Series Chanes",
+    "section": "A Simplified Example",
+    "text": "A Simplified Example\nAdapted from the Matrix Profile VII paper, consider the following time series:\n47, 32, 1, 22, 2, 58, 3, 36, 4, -5, 5, 40\nAssume that the subsequence length is 1 and the distance between two subsequences is simply the absolute difference between them. To be clear, we are making these simple and pathological assumptions here just for the purposes of elucidation; we are actually targeting much longer subsequence lengths and using z-normalized Euclidean distance in our applications. To capture the directionality of a time series chain, we need to store the left and right nearest neighbor information into the left (IL) and right (IR) matrix profile indices:\n\n\n\nIndex\nValue\nLeft Index (IL)\nRight Index (IR)\n\n\n\n\n1\n47\n-\n12\n\n\n2\n32\n1\n8\n\n\n3\n1\n2\n5\n\n\n4\n22\n2\n8\n\n\n5\n2\n3\n7\n\n\n6\n58\n1\n12\n\n\n7\n3\n5\n9\n\n\n8\n36\n2\n12\n\n\n9\n4\n7\n11\n\n\n10\n-5\n3\n11\n\n\n11\n5\n9\n12\n\n\n12\n40\n8\n-\n\n\n\nIn this vertical/transposed representation, the index column shows the location of every subsequence in the time series, the value column contains the original numbers from our time series above, the IL column shows the left matrix profile indices, and IR is the right matrix profile indices. For example, IR[2] = 8 means the right nearest neighbor of index = 2 (which has value = 32) is at index = 8 (which has value = 36). Similarly, IL[3] = 2 means that the left nearest neighbor of index = 3 (with value = 1) is at index = 2 (which has value = 32). To better visualize the left/right matrix profile index, we use arrows to link every subsequence in the time series with its left and right nearest neighbors:\nnearest_neighbors = np.array([[1,  47, np.nan,     12],\n                              [2,  32,      1,      8],\n                              [3,   1,      2,      5],\n                              [4,  22,      2,      8],\n                              [5,   2,      3,      7],\n                              [6,  58,      1,     12],\n                              [7,   3,      5,      9],\n                              [8,  36,      2,     12],\n                              [9,   4,      7,     11],\n                              [10, -5,      3,     11],\n                              [11,  5,      9,     12],\n                              [12, 40,      8, np.nan]])\n\ncolors = [['C1', 'C1'],\n          ['C2', 'C5'],\n          ['C3', 'C5'],\n          ['C4', 'C4'],\n          ['C3', 'C2'],\n          ['C5', 'C3'],\n          ['C3', 'C2'],\n          ['C2', 'C1'],\n          ['C3', 'C2'],\n          ['C6', 'C1'],\n          ['C6', 'C2'],\n          ['C1', 'C1']]\n\nstyle=\"Simple, tail_width=0.5, head_width=6, head_length=8\"\nkw = dict(arrowstyle=style, connectionstyle=\"arc3, rad=-.5\",)\n\nxs = np.arange(nearest_neighbors.shape[0]) + 1\nys = np.zeros(nearest_neighbors.shape[0])\nplt.plot(xs, ys, markerfacecolor=\"None\", markeredgecolor=\"None\", linewidth=0)\n\nx0, x1, y0, y1 = plt.axis()\nplot_margin = 5.0\nplt.axis((x0 - plot_margin,\n          x1 + plot_margin,\n          y0 - plot_margin,\n          y1 + plot_margin))\nplt.axis('off')\n\nfor x, y, nearest_neighbor, color in zip(xs, ys, nearest_neighbors, colors):\n    plt.text(x, y, str(int(nearest_neighbor[1])), color=\"black\", fontsize=20)\n    \n    # Plot right matrix profile indices\n    if not np.isnan(nearest_neighbor[3]):\n        arrow = FancyArrowPatch((x, 0.5), (nearest_neighbor[3], 0.5), color=color[0], **kw)\n        plt.gca().add_patch(arrow)\n        \n    # Plot left matrix profile indices\n    if not np.isnan(nearest_neighbor[2]):\n        arrow = FancyArrowPatch((x, 0.0), (nearest_neighbor[2], 0.0), color=color[1], **kw)\n        plt.gca().add_patch(arrow)\n\nplt.show()\n\n\n\npng\n\n\nAn arrow pointing from a number to its right nearest neighbor (arrows shown above the time series) can be referred to as forward arrow and an arrow pointing from a number to its left nearest neighbor (arrows shown below the time series) can be referred to as a backward arrow. According to the formal definition of a time series chain (see Matrix Profile VII for a thorough definition and discussion), every pair of consecutive subsequences in a chain must be connected by both a forward arrow and a backward arrow. A keen eye will spot the fact that the longest chain in our simplified example is:\nnearest_neighbors = np.array([[1,  47, np.nan, np.nan],\n                              [2,  32, np.nan, np.nan],\n                              [3,   1, np.nan,      5],\n                              [4,  22, np.nan, np.nan],\n                              [5,   2,      3,      7],\n                              [6,  58, np.nan, np.nan],\n                              [7,   3,      5,      9],\n                              [8,  36, np.nan, np.nan],\n                              [9,   4,      7,     11],\n                              [10, -5, np.nan, np.nan],\n                              [11,  5,      9, np.nan],\n                              [12, 40, np.nan, np.nan]])\n\ncolors = [['C1', 'C1'],\n          ['C2', 'C5'],\n          ['C3', 'C5'],\n          ['C4', 'C4'],\n          ['C3', 'C2'],\n          ['C5', 'C3'],\n          ['C3', 'C2'],\n          ['C2', 'C1'],\n          ['C3', 'C2'],\n          ['C6', 'C1'],\n          ['C6', 'C2'],\n          ['C1', 'C1']]\n\nstyle=\"Simple, tail_width=0.5, head_width=6, head_length=8\"\nkw = dict(arrowstyle=style, connectionstyle=\"arc3, rad=-.5\",)\n\nxs = np.arange(nearest_neighbors.shape[0]) + 1\nys = np.zeros(nearest_neighbors.shape[0])\nplt.plot(xs, ys, markerfacecolor=\"None\", markeredgecolor=\"None\", linewidth=0)\n\nx0, x1, y0, y1 = plt.axis()\nplot_margin = 5.0\nplt.axis((x0 - plot_margin,\n          x1 + plot_margin,\n          y0 - plot_margin,\n          y1 + plot_margin))\nplt.axis('off')\n\nfor x, y, nearest_neighbor, color in zip(xs, ys, nearest_neighbors, colors):\n    plt.text(x, y, str(int(nearest_neighbor[1])), color=\"black\", fontsize=20)\n    \n    # Plot right matrix profile indices\n    if not np.isnan(nearest_neighbor[3]):\n        arrow = FancyArrowPatch((x, 0.5), (nearest_neighbor[3], 0.5), color=color[0], **kw)\n        plt.gca().add_patch(arrow)\n        \n    # Plot left matrix profile indices\n    if not np.isnan(nearest_neighbor[2]):\n        arrow = FancyArrowPatch((x, 0.0), (nearest_neighbor[2], 0.0), color=color[1], **kw)\n        plt.gca().add_patch(arrow)\n\nplt.show()\n\n\n\npng\n\n\nThe longest extracted chain is therefore 1 ⇌ 2 ⇌ 3 ⇌ 4 ⇌ 5. Note that we see a gradual monotonic increase in the data but, in reality, the increase or decrease in drift can happen in arbitrarily complex ways that can be detected by the time series chains approach. The key component of drifting is that the time series must contain chains with clear directionality.\nSTUMPY is capable of computing:\n\nanchored time series chains (ATSC) - grow a chain from a user-specified anchor (i.e., specific subsequence)\nall-chain set (ALLC) - a set of anchored time series chains (i.e., each chain starts with a particular subsequence) that are not subsumed by another longer chain\nunanchored time series chain - the unconditionally longest chain within a time series (note that there could be more than one if there were chains with the same length but only one is returned)\n\nSo, what does this mean in the context of a real time series? Let’s take a look at a real example from web query data!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#retrieve-the-data",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#retrieve-the-data",
+    "title": "Time Series Chanes",
+    "section": "Retrieve the Data",
+    "text": "Retrieve the Data\nWe will be looking at a noisy dataset that is under-sampled and has a growing trend, which will perfectly illustrate the idea regarding time series chains. The data contains a decade-long GoogleTrend query volume (collected weekly from 2004-2014) for the keyword Kohl’s, an American retail chain. First, we’ll download the data, extract it, and insert it into a pandas dataframe.\ndf = pd.read_csv(\"https://zenodo.org/record/4276348/files/Time_Series_Chains_Kohls_data.csv?download=1\")\ndf.head()\n\n\n\n\n\n\n\n\nvolume\n\n\n\n\n\n\n0\n\n\n0.010417\n\n\n\n\n1\n\n\n0.010417\n\n\n\n\n2\n\n\n0.010417\n\n\n\n\n3\n\n\n0.000000\n\n\n\n\n4\n\n\n0.000000"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#visualizing-the-data",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#visualizing-the-data",
+    "title": "Time Series Chanes",
+    "section": "Visualizing the Data",
+    "text": "Visualizing the Data\nplt.plot(df['volume'], color='black')\nplt.xlim(0, df.shape[0]+12)\ncolor = itertools.cycle(['white', 'gainsboro'])\nfor i, x in enumerate(range(0, df.shape[0], 52)):\n    plt.text(x+12, 0.9, str(2004+i), color=\"black\", fontsize=20)\n    rect = Rectangle((x, -1), 52, 2.5, facecolor=next(color))\n    plt.gca().add_patch(rect)\nplt.show()\n\npngThe raw time series above displays ten years of web query volume for the keyword “Kohl’s”, where each alternating white and grey vertical band represents a 52 week period starting from 2004 to 2014. As depicted, the time series features a significant but unsurprising “end-of-year holiday bump”. Relating back to time series chains, we can see that the bump is generally increasing over time and so we might be able to capture this when we compute the unanchored chain.\nHowever, as we learned above, in order to compute any time series chains, we also need the left and right matrix profile indices. Luckily for us, according to the docstring, the stump function not only returns the (bidirectional) matrix profile and the matrix profile indices in the first and second columns of the NumPy array, respectively, but the third and fourth columns consists of the left matrix profile indices and the right matrix profile indices, respectively."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#computing-the-left-and-right-matrix-profile-indices",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#computing-the-left-and-right-matrix-profile-indices",
+    "title": "Time Series Chanes",
+    "section": "Computing the Left and Right Matrix Profile Indices",
+    "text": "Computing the Left and Right Matrix Profile Indices\nSo, let’s go ahead and compute the matrix profile indices and we’ll set the window size, m = 20, which is the approximate length of a “bump”.\nm = 20\nmp = stumpy.stump(df['volume'], m=m)"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#computing-the-unanchored-chain",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#computing-the-unanchored-chain",
+    "title": "Time Series Chanes",
+    "section": "Computing the Unanchored Chain",
+    "text": "Computing the Unanchored Chain\nNow, with our left and right matrix profile indices in hand, we are ready to call the all-chain set function, allc, which not only returns the all-chain set but, as a freebie, it also returns the unconditionally longest chain, also know as the unanchored chain. The latter of which is really what we’re most interested in.\nall_chain_set, unanchored_chain = stumpy.allc(mp[:, 2], mp[:, 3])\n:::{admonition} Added after STUMPY version 1.12.0 :class: note\nIn place of array slicing (i.e., mp[:, 2], mp[:, 3]), the left and right matrix profile indices can also be accessed through the left_I_ and right_I_ attributes, respectively.\nmp = stumpy.stump(T, m)\nprint(mp.left_I_, mp.right_I_)  # print the left and right matrix profile indices \nAdditionally, you can also access the matrix profile distances directly through the P_ attribute and the matrix profile indices can be accessed through the I_ attribute. :::"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#visualizing-the-unanchored-chain",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#visualizing-the-unanchored-chain",
+    "title": "Time Series Chanes",
+    "section": "Visualizing the Unanchored Chain",
+    "text": "Visualizing the Unanchored Chain\nplt.plot(df['volume'], linewidth=1, color='black')\nfor i in range(unanchored_chain.shape[0]):\n    y = df['volume'].iloc[unanchored_chain[i]:unanchored_chain[i]+m]\n    x = y.index.values\n    plt.plot(x, y, linewidth=3)\ncolor = itertools.cycle(['white', 'gainsboro'])\nfor i, x in enumerate(range(0, df.shape[0], 52)):\n    plt.text(x+12, 0.9, str(2004+i), color=\"black\", fontsize=20)\n    rect = Rectangle((x, -1), 52, 2.5, facecolor=next(color))\n    plt.gca().add_patch(rect)\n\nplt.show()\n\n\n\npng\n\n\nplt.axis('off')\nfor i in range(unanchored_chain.shape[0]):\n    data = df['volume'].iloc[unanchored_chain[i]:unanchored_chain[i]+m].reset_index().values\n    x = data[:, 0]\n    y = data[:, 1]\n    plt.axvline(x=x[0]-x.min()+(m+5)*i + 11, alpha=0.3)\n    plt.axvline(x=x[0]-x.min()+(m+5)*i + 15, alpha=0.3, linestyle='-.')\n    plt.plot(x-x.min()+(m+5)*i, y-y.min(), linewidth=3)\nplt.show()\n\n\n\npng\n\n\nThe discovered chain shows that over the decade, the bump transitions from a smooth bump covering the period between Thanksgiving (solid vertical line) and Christmas (dashed vertical line), to a more sharply focused bump centered on Thanksgiving. This seems to reflect the growing importance of “Cyber Monday”, a marketing term for the Monday after Thanksgiving. The phrase was created by marketing companies to persuade consumers to shop online. The term made its debut on November 28th, 2005 in a press release entitled “Cyber Monday Quickly Becoming One of the Biggest Online Shopping Days of the Year”. Note that this date coincides with the first glimpse of the sharpening peak in our chain.\nIt also appears that we may have “missed” a few links in the chain. However, note that the data is noisy and undersampled, and the “missed” bumps are too distorted to conform with the general evolving trend. This noisy example actually illustrates the robustness of the time series chains technique. As noted before, we don’t actually need “perfect” data in order to find meaningful chains. Even if some links are badly distorted, the discovered chain will still be able to include all of the other evolving patterns.\nOne final consideration is the potential use of chains to predict the future. One could leverage the evolving links within the chains in order to forecast the shape of the next bump. We refer the reader to the Matrix Profile VII for further discussions on this topic."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#summary",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#summary",
+    "title": "Time Series Chanes",
+    "section": "Summary",
+    "text": "Summary\nAnd that’s it! You’ve just learned the basics of how to identify directional trends, also known as chains, within your data using the matrix profile indices and leveraging allc."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Time_Series_Chains.html#resources",
+    "href": "tutorial/Tutorial_Time_Series_Chains.html#resources",
+    "title": "Time Series Chanes",
+    "section": "Resources",
+    "text": "Resources\nMatrix Profile VII\nMatrix Profile VII Supplementary Materials\nSTUMPY Documentation\nSTUMPY Matrix Profile Github Code Repository\n\n\n\n\nGem City Tech ML/AI"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#analyzing-motifs-and-anomalies-with-stump",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#analyzing-motifs-and-anomalies-with-stump",
+    "title": "STUMPY Basic",
+    "section": "Analyzing Motifs and Anomalies with STUMP",
+    "text": "Analyzing Motifs and Anomalies with STUMP\nThis tutorial utilizes the main takeaways from the research papers: Matrix Profile I & Matrix Profile II.\nTo explore the basic concepts, we’ll use the workhorse stump function to find interesting motifs (patterns) or discords (anomalies/novelties) and demonstrate these concepts with two different time series datasets:\n\nThe Steamgen dataset\nThe NYC taxi passengers dataset\n\nstump is Numba JIT-compiled version of the popular STOMP algorithm that is described in detail in the original Matrix Profile II paper. stump is capable of parallel computation and it performs an ordered search for patterns and outliers within a specified time series and takes advantage of the locality of some calculations to minimize the runtime."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#getting-started",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#getting-started",
+    "title": "STUMPY Basic",
+    "section": "Getting Started",
+    "text": "Getting Started\nLet’s import the packages that we’ll need to load, analyze, and plot the data.\n%matplotlib inline\n\nimport pandas as pd\nimport stumpy\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.dates as dates\nfrom matplotlib.patches import Rectangle\nimport datetime as dt\n\nplt.style.use('https://raw.githubusercontent.com/TDAmeritrade/stumpy/main/docs/stumpy.mplstyle')"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#what-is-a-motif",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#what-is-a-motif",
+    "title": "STUMPY Basic",
+    "section": "What is a Motif?",
+    "text": "What is a Motif?\nTime series motifs are approximately repeated subsequences found within a longer time series.\nSaying that a subsequence is “approximately repeated” requires that you are able to compare subsequences to each other.\n In the case of STUMPY, all subsequences within a time series can be compared by computing the pairwise z-normalized Euclidean distances and then storing only the index to its nearest neighbor.\n This nearest neighbor distance vector is referred to as the matrix profile and the index to each nearest neighbor within the time series is referred to as the matrix profile index.\n\nLuckily, the stump function takes in any time series (with floating point values) and computes the matrix profile along with the matrix profile indices and, in turn, one can immediately find time series motifs."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#loading-the-steamgen-dataset",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#loading-the-steamgen-dataset",
+    "title": "STUMPY Basic",
+    "section": "Loading the Steamgen Dataset",
+    "text": "Loading the Steamgen Dataset\nThis data was generated using fuzzy models applied to mimic a steam generator at the Abbott Power Plant in Champaign, IL. The data feature that we are interested in is the output steam flow telemetry that has units of kg/s and the data is “sampled” every three seconds with a total of 9,600 datapoints.\nsteam_df = pd.read_csv(\"https://zenodo.org/record/4273921/files/STUMPY_Basics_steamgen.csv?download=1\")\nsteam_df.head()\n\n\n\n\n\n\n\n\ndrum pressure\n\n\nexcess oxygen\n\n\nwater level\n\n\nsteam flow\n\n\n\n\n\n\n0\n\n\n320.08239\n\n\n2.506774\n\n\n0.032701\n\n\n9.302970\n\n\n\n\n1\n\n\n321.71099\n\n\n2.545908\n\n\n0.284799\n\n\n9.662621\n\n\n\n\n2\n\n\n320.91331\n\n\n2.360562\n\n\n0.203652\n\n\n10.990955\n\n\n\n\n3\n\n\n325.00252\n\n\n0.027054\n\n\n0.326187\n\n\n12.430107\n\n\n\n\n4\n\n\n326.65276\n\n\n0.285649\n\n\n0.753776\n\n\n13.681666"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#visualizing-the-steamgen-dataset",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#visualizing-the-steamgen-dataset",
+    "title": "STUMPY Basic",
+    "section": "Visualizing the Steamgen Dataset",
+    "text": "Visualizing the Steamgen Dataset\nplt.suptitle('Steamgen Dataset', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Steam Flow', fontsize='20')\nplt.plot(steam_df['steam flow'].values)\nplt.show()\n.\nDo you see a pattern?"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#manually-finding-a-motif",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#manually-finding-a-motif",
+    "title": "STUMPY Basic",
+    "section": "Manually Finding a Motif",
+    "text": "Manually Finding a Motif\nHere’s what you should be looking for: Motif\nm = 640\nfig, axs = plt.subplots(2)\nplt.suptitle('Steamgen Dataset', fontsize='30')\naxs[0].set_ylabel(\"Steam Flow\", fontsize='20')\naxs[0].plot(steam_df['steam flow'], alpha=0.5, linewidth=1)\naxs[0].plot(steam_df['steam flow'].iloc[643:643+m])\naxs[0].plot(steam_df['steam flow'].iloc[8724:8724+m])\nrect = Rectangle((643, 0), m, 40, facecolor='lightgrey')\naxs[0].add_patch(rect)\nrect = Rectangle((8724, 0), m, 40, facecolor='lightgrey')\naxs[0].add_patch(rect)\naxs[1].set_xlabel(\"Time\", fontsize='20')\naxs[1].set_ylabel(\"Steam Flow\", fontsize='20')\naxs[1].plot(steam_df['steam flow'].values[643:643+m], color='C1')\naxs[1].plot(steam_df['steam flow'].values[8724:8724+m], color='C2')\nplt.show()"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#find-a-motif-using-stump",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#find-a-motif-using-stump",
+    "title": "STUMPY Basic",
+    "section": "Find a Motif Using STUMP",
+    "text": "Find a Motif Using STUMP\nm = 640\nmp = stumpy.stump(steam_df['steam flow'], m)\nstump requires two parameters:\n\nA time series\nA window size, m\n\nIn this case, based on some domain expertise, we’ve chosen m = 640, which is roughly equivalent to half-hour windows. And, again, the output of stump is an array that contains all of the matrix profile values (i.e., z-normalized Euclidean distance to your nearest neighbor) and matrix profile indices in the first and second columns, respectively (we’ll ignore the third and fourth columns for now). To identify the index location of the motif we’ll need to find the index location where the matrix profile, mp[:, 0], has the smallest value:\nmotif_idx = np.argsort(mp[:, 0])[0]\n\nprint(f\"The motif is located at index {motif_idx}\")\nThe motif is located at index 643\nWith this motif_idx information, we can also identify the location of its nearest neighbor by cross-referencing the matrix profile indices, mp[:, 1]:\nnearest_neighbor_idx = mp[motif_idx, 1]\n\nprint(f\"The nearest neighbor is located at index {nearest_neighbor_idx}\")\nThe nearest neighbor is located at index 8724\nNow, let’s put all of this together and plot the matrix profile next to our raw data:\nfig, axs = plt.subplots(2, sharex=True, gridspec_kw={'hspace': 0})\nplt.suptitle('Motif (Pattern) Discovery', fontsize='30')\n\naxs[0].plot(steam_df['steam flow'].values)\naxs[0].set_ylabel('Steam Flow', fontsize='20')\nrect = Rectangle((motif_idx, 0), m, 40, facecolor='lightgrey')\naxs[0].add_patch(rect)\nrect = Rectangle((nearest_neighbor_idx, 0), m, 40, facecolor='lightgrey')\naxs[0].add_patch(rect)\naxs[1].set_xlabel('Time', fontsize ='20')\naxs[1].set_ylabel('Matrix Profile', fontsize='20')\naxs[1].axvline(x=motif_idx, linestyle=\"dashed\")\naxs[1].axvline(x=nearest_neighbor_idx, linestyle=\"dashed\")\naxs[1].plot(mp[:, 0])\nplt.show()\n\npngWhat we learn is that the global minima (vertical dashed lines) from the matrix profile correspond to the locations of the two subsequences that make up the motif pair! And the exact z-normalized Euclidean distance between these two subsequences is:\nmp[motif_idx, 0]\n5.4916198277694726\n:::{admonition} Added after STUMPY version 1.12.0 :class: note\nIn place of array slicing (i.e., mp[:, 0], mp[:, 1]), the matrix profile distances can be accessed directly through the P_ attribute and the matrix profile indices can be accessed through the I_ attribute:\nmp = stumpy.stump(T, m)\nprint(mp.P_, mp.I_)  # print the matrix profile and the matrix profile indices \nAdditionally, the left and right matrix profile indices can also be accessed through the left_I_ and right_I_ attributes, respectively. :::\nSo, this distance isn’t zero since we saw that the two subsequences aren’t an identical match but, relative to the rest of the matrix profile (i.e., compared to either the mean or median matrix profile values), we can understand that this motif is a significantly good match."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#find-potential-anomalies-discords-using-stump",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#find-potential-anomalies-discords-using-stump",
+    "title": "STUMPY Basic",
+    "section": "Find Potential Anomalies (Discords) using STUMP",
+    "text": "Find Potential Anomalies (Discords) using STUMP\nConversely, the index location within our matrix profile that has the largest value (computed from stump above) is:\ndiscord_idx = np.argsort(mp[:, 0])[-1]\n\nprint(f\"The discord is located at index {discord_idx}\")\nThe discord is located at index 3864\nAnd the nearest neighbor to this discord has a distance that is quite far away:\nnearest_neighbor_distance = mp[discord_idx, 0]\n\nprint(f\"The nearest neighbor subsequence to this discord is {nearest_neighbor_distance} units away\")\nThe nearest neighbor subsequence to this discord is 23.476168367302023 units away\nThe subsequence located at this global maximum is also referred to as a discord, novelty, or “potential anomaly”:"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#loading-the-nyc-taxi-passengers-dataset",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#loading-the-nyc-taxi-passengers-dataset",
+    "title": "STUMPY Basic",
+    "section": "Loading the NYC Taxi Passengers Dataset",
+    "text": "Loading the NYC Taxi Passengers Dataset\nFirst, we’ll download historical data that represents the half-hourly average of the number of NYC taxi passengers over 75 days in the Fall of 2014.\nWe extract that data and insert it into a pandas dataframe, making sure the timestamps are stored as datetime objects and the values are of type float64. Note that we’ll do a little more data cleaning than above just so you can see an example where the timestamp is included. But be aware that stump does not actually use or need the timestamp column at all when computing the matrix profile.\ntaxi_df = pd.read_csv(\"https://zenodo.org/record/4276428/files/STUMPY_Basics_Taxi.csv?download=1\")\ntaxi_df['value'] = taxi_df['value'].astype(np.float64)\ntaxi_df['timestamp'] = pd.to_datetime(taxi_df['timestamp'], errors='ignore')\ntaxi_df.head()\n            timestamp    value\n0 2014-10-01 00:00:00  12751.0\n1 2014-10-01 00:30:00   8767.0\n2 2014-10-01 01:00:00   7005.0\n3 2014-10-01 01:30:00   5257.0\n4 2014-10-01 02:00:00   4189.0"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#visualizing-the-taxi-dataset",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#visualizing-the-taxi-dataset",
+    "title": "STUMPY Basic",
+    "section": "Visualizing the Taxi Dataset",
+    "text": "Visualizing the Taxi Dataset\n# This code is going to be utilized to control the axis labeling of the plots\nDAY_MULTIPLIER = 7  # Specify for the amount of days you want between each labeled x-axis tick\n\nx_axis_labels = taxi_df[(taxi_df.timestamp.dt.hour==0)]['timestamp'].dt.strftime('%b %d').values[::DAY_MULTIPLIER]\nx_axis_labels[1::2] = \" \"\nx_axis_labels, DAY_MULTIPLIER\n\nplt.suptitle('Taxi Passenger Raw Data', fontsize='30')\nplt.xlabel('Window Start Date', fontsize ='20')\nplt.ylabel('Half-Hourly Average\\nNumber of Taxi Passengers', fontsize='20')\nplt.plot(taxi_df['value'])\n\nplt.xticks(np.arange(0, taxi_df['value'].shape[0], (48*DAY_MULTIPLIER)/2), x_axis_labels)\nplt.xticks(rotation=75)\nplt.minorticks_on()\nplt.margins(x=0)\nplt.show()"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#generating-the-matrix-profile",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#generating-the-matrix-profile",
+    "title": "STUMPY Basic",
+    "section": "Generating the Matrix Profile",
+    "text": "Generating the Matrix Profile\nAgain, defining the window size, m, usually requires some level of domain knowledge but we’ll demonstrate later on that stump is robust to changes in this parameter.\nSince this data was taken half-hourly, we chose a value m = 48 to represent the span of exactly one day:\nd = 24 * 2 # 24 hours in a day and two measurements per hour\nm = 48\nmp = stumpy.stump(taxi_df['value'], m=m)"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#visualizing-the-matrix-profile",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#visualizing-the-matrix-profile",
+    "title": "STUMPY Basic",
+    "section": "Visualizing the Matrix Profile",
+    "text": "Visualizing the Matrix Profile\nplt.suptitle('1-Day STUMP', fontsize='30')\nplt.xlabel('Window Start', fontsize ='20')\nplt.ylabel('Matrix Profile', fontsize='20')\nplt.plot(mp[:, 0])\n\nplt.plot(575, 1.7, marker=\"v\", markersize=15, color='b')\nplt.text(620, 1.6, 'Columbus Day', color=\"black\", fontsize=20)\nplt.plot(1535, 3.7, marker=\"v\", markersize=15, color='b')\nplt.text(1580, 3.6, 'Daylight Savings', color=\"black\", fontsize=20)\nplt.plot(2700, 3.1, marker=\"v\", markersize=15, color='b')\nplt.text(2745, 3.0, 'Thanksgiving', color=\"black\", fontsize=20)\nplt.plot(30, .2, marker=\"^\", markersize=15, color='b', fillstyle='none')\nplt.plot(363, .2, marker=\"^\", markersize=15, color='b', fillstyle='none') \nplt.xticks(np.arange(0, 3553, (m*DAY_MULTIPLIER)/2), x_axis_labels)\nplt.xticks(rotation=75)\nplt.minorticks_on()\nplt.show()\n\npng"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#understanding-the-matrix-profile",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#understanding-the-matrix-profile",
+    "title": "STUMPY Basic",
+    "section": "Understanding the Matrix Profile",
+    "text": "Understanding the Matrix Profile\nLet’s understand what we’re looking at.\n\nLowest Values\nThe lowest values (open triangles) are considered a motif since they represent the pair of nearest neighbor subsequences with the smallest z-normalized Euclidean distance. Interestingly, the two lowest data points are exactly 7 days apart, which suggests that, in this dataset, there may be a periodicity of seven days in addition to the more obvious periodicity of one day.\nHighest Values\nSo what about the highest matrix profile values (filled triangles)? The subsequences that have the highest (local) values really emphasizes their uniqueness. We found that the top three peaks happened to correspond exactly with the timing of Columbus Day, Daylight Saving Time, and Thanksgiving, respectively."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#different-window-sizes",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#different-window-sizes",
+    "title": "STUMPY Basic",
+    "section": "Different Window Sizes",
+    "text": "Different Window Sizes\nAs we had mentioned above, stump should be robust to the choice of the window size parameter, m. Below, we demonstrate how manipulating the window size can have little impact on your resulting matrix profile by running stump with varying windows sizes.\ndays_dict ={\n  \"Half-Day\": 24,\n  \"1-Day\": 48,\n  \"2-Days\": 96,\n  \"5-Days\": 240,\n  \"7-Days\": 336,\n}\n\ndays_df = pd.DataFrame.from_dict(days_dict, orient='index', columns=['m'])\ndays_df.head()\n\n\n\n\n\n\n\n\nm\n\n\n\n\n\n\nHalf-Day\n\n\n24\n\n\n\n\n1-Day\n\n\n48\n\n\n\n\n2-Days\n\n\n96\n\n\n\n\n5-Days\n\n\n240\n\n\n\n\n7-Days\n\n\n336"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#gpu-stump---faster-stump-using-gpus",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#gpu-stump---faster-stump-using-gpus",
+    "title": "STUMPY Basic",
+    "section": "GPU-STUMP - Faster STUMP Using GPUs",
+    "text": "GPU-STUMP - Faster STUMP Using GPUs\nWhen you have significantly more than a few thousand data points in your time series, you may need a speed boost to help analyze your data. Luckily, you can try gpu_stump, a super fast GPU-powered alternative to stump that gives speed of a few hundred CPUs and provides the same output as stump:\nimport stumpy\n\nmp = stumpy.gpu_stump(df['value'], m=m)  # Note that you'll need a properly configured NVIDIA GPU for this\nIn fact, if you aren’t dealing with PII/SII data, then you can try out gpu_stump using the this notebook on Google Colab."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#stumped---distributed-stump",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#stumped---distributed-stump",
+    "title": "STUMPY Basic",
+    "section": "STUMPED - Distributed STUMP",
+    "text": "STUMPED - Distributed STUMP\nAlternatively, if you only have access to a cluster of CPUs and your data needs to stay behind your firewall, then stump and gpu_stump may not be sufficient for your needs. Instead, you can try stumped, a distributed and parallel implementation of stump that depends on Dask distributed:\nimport stumpy\nfrom dask.distributed import Client\n\nif __name__ == \"__main__\":\n    with Client() as dask_client:\n        mp = stumpy.stumped(dask_client, df['value'], m=m)  # Note that a dask client is needed"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#bonus-section",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#bonus-section",
+    "title": "STUMPY Basic",
+    "section": "Bonus Section",
+    "text": "Bonus Section\nUnderstanding the Matrix Profile Columnar Output\nFor any 1-D time series, T, its matrix profile, mp, computed from stumpy.stump(T, m) will contain 4 explicit columns, which we’ll describe in a moment. Implicitly, the ith row of the mp array corresponds to the set of (4) nearest neighbor values computed for the specific subsequence T[i : i + m].\nThe first column of the mp contains the matrix profile (nearest neighbor distance) value, P (note that due to zero-based indexing, the “first column” has a column index value of zero). The second column contains the (zero-based) index location, I, of where the (above) nearest neighbor is located along T (note that any negative index values are “bad” values and indicates that a nearest neighbor could not be found).\nSo, for the ith subsequence T[i : i + m], its nearest neighbor (located somewhere along T) has a starting index location of I = mp[i, 1] and, assuming that I &gt;= 0, this corresponds to the subsequence found at T[I : I + m]. And the matrix profile value for the ith subsequence, P = [i, 0], is the exact (z-normalized Euclidean) distance between T[i : i + m] and T[I : I + m]. Note that the nearest neighbor index location, I, can be positioned ANYWHERE. That is, dependent upon the ith subsequence, its nearest neighbor, I, can be located before/to-the-“left” of i (i.e., I &lt;= i) or come after/to-the-“right” of i (i.e., I &gt;= i). In other words, there is no constraint on where a nearest neighbor is located. However, there may be a time when you might like to only know about a nearest neighbor that either comes before/after i and this is where columns 3 and 4 of mp come into play.\nThe third column contains the (zero-based) index location, IL, of where the “left” nearest neighbor is located along T. Here, there is a constraint that IL &lt; i or that IL must come before/to-the-left of i. Thus, the “left nearest neighbor” for the ith subsequence would be located at IL = mp[i, 2] and corresponds to T[IL : IL + m].\nThe fourth column contains the (zero-based) index location, IR, of where the “right” nearest neighbor is located along T. Here, there is a constraint that IR &gt; i or that IR must come after/to-the-right of i. Thus, the “right nearest neighbor” for the ith subsequence would be located at IR = mp[i, 3] and corresponds to T[IR : IR + m].\nAgain, note that any negative index values are “bad” values and indicates that a nearest neighbor could not be found.\nTo reinforce this more concretely, let’s use the following mp array as an example:\narray([[1.626257115121311,  202, -1,  202],\n       [1.7138456780667977,  65,  0,   65],\n       [1.880293454724256,   66,  0,   66],\n       [1.796922109741226,   67,  0,   67],\n       [1.4943082939628236,  11,  1,   11],\n       [1.4504278114808016,  12,  2,   12],\n       [1.6294354134867932,  19,  0,   19],\n       [1.5349365731102185, 229,  0,  229],\n       [1.3930265554289831, 186,  1,  186],\n       [1.5265881687159586, 187,  2,  187],\n       [1.8022253384245739,  33,  3,   33],\n       [1.4943082939628236,   4,  4,  118],\n       [1.4504278114808016,   5,  5,  137],\n       [1.680920620705546,  201,  6,  201],\n       [1.5625058007723722, 237,  8,  237],\n       [1.2860008417613522,  66,  9,   -1]]"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#summary",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#summary",
+    "title": "STUMPY Basic",
+    "section": "Summary",
+    "text": "Summary\nAnd that’s it! You have now loaded in a dataset, ran it through stump using our package, and were able to extract multiple conclusions of existing patterns and anomalies within the two different time series. You can now import this package and use it in your own projects. Happy coding!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#resources",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#resources",
+    "title": "STUMPY Basic",
+    "section": "Resources",
+    "text": "Resources\nMatrix Profile I\nMatrix Profile II\nSTUMPY Documentation\nSTUMPY Matrix Profile Github Code Repository\n\n\n\n\nGem City Tech ML/AI"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#beyond-matrix-profiles",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#beyond-matrix-profiles",
+    "title": "Exploring AI",
+    "section": "Beyond Matrix Profiles",
+    "text": "Beyond Matrix Profiles\nAt the core of STUMPY, one can take any time series data and efficiently compute something called a matrix profile, which essentially scans along your entire time series with a fixed window size, m, and finds the exact nearest neighbor for every subsequence within your time series. A matrix profile allows you to determine if there are any conserved behaviors (i.e., conserved subsequences/patterns) within your data and, if so, it can tell you exactly where they are located within your time series. In a previous tutorial, we demonstrated how to use STUMPY to easily obtain a matrix profile, learned how to interpret the results, and discover meaningful motifs and discords. While this brute-force approach may be very useful when you don’t know what pattern or conserved behavior you are looking but, for sufficiently large datasets, it can become quite expensive to perform this exhaustive pairwise search.\nHowever, if you already have a specific user defined pattern in mind then you don’t actually need to compute the full matrix profile! For example, maybe you’ve identified an interesting trading strategy based on historical stock market data and you’d like to see if that specific pattern may have been observed in the past within one or more stock ticker symbols. In that case, searching for a known pattern or “query” is actually quite straightforward and can be accomplished quickly by using the wonderful stumpy.mass function in STUMPY.\nIn this short tutorial, we’ll take a simple known pattern of interest (i.e., a query subsequence) and we’ll search for this pattern in a separate independent time series. Let’s get started!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#getting-started",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#getting-started",
+    "title": "Exploring AI",
+    "section": "Getting Started",
+    "text": "Getting Started\nLet’s import the packages that we’ll need to load, analyze, and plot the data\n%matplotlib inline\n\nimport pandas as pd\nimport stumpy\nimport numpy as np\nimport numpy.testing as npt\nimport matplotlib.pyplot as plt\nfrom matplotlib.patches import Rectangle\n\nplt.style.use('https://raw.githubusercontent.com/TDAmeritrade/stumpy/main/docs/stumpy.mplstyle')"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#loading-the-sony-aibo-robot-dog-dataset",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#loading-the-sony-aibo-robot-dog-dataset",
+    "title": "Exploring AI",
+    "section": "Loading the Sony AIBO Robot Dog Dataset",
+    "text": "Loading the Sony AIBO Robot Dog Dataset\nThe time series data (below), T_df, has n = 13000 data points and it was collected from an accelerometer inside of a Sony AIBO robot dog where it tracked the robot dog when it was walking from a cement surface onto a carpeted surface and, finally, back to the cement surface:\nT_df = pd.read_csv(\"https://zenodo.org/record/4276393/files/Fast_Pattern_Searching_robot_dog.csv?download=1\")\nT_df.head()\n\n\n\n\n\n\n\n\nAcceleration\n\n\n\n\n\n\n0\n\n\n0.89969\n\n\n\n\n1\n\n\n0.89969\n\n\n\n\n2\n\n\n0.89969\n\n\n\n\n3\n\n\n0.89969\n\n\n\n\n4\n\n\n0.89969"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#visualizing-the-sony-aibo-robot-dog-dataset",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#visualizing-the-sony-aibo-robot-dog-dataset",
+    "title": "Exploring AI",
+    "section": "Visualizing the Sony AIBO Robot Dog Dataset",
+    "text": "Visualizing the Sony AIBO Robot Dog Dataset\nplt.suptitle('Sony AIBO Robot Dog Dataset, T_df', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nplt.plot(T_df)\nplt.text(2000, 4.5, 'Cement', color=\"black\", fontsize=20)\nplt.text(10000, 4.5, 'Cement', color=\"black\", fontsize=20)\nax = plt.gca()\nrect = Rectangle((5000, -4), 3000, 10, facecolor='lightgrey')\nax.add_patch(rect)\nplt.text(6000, 4.5, 'Carpet', color=\"black\", fontsize=20)\nplt.show()\n\npngIn the plot above, the periods of time when the robot dog was walking on cement is displayed with a white background while the times when the robot dog was walking on carpet is highlighted with a grey background. Do you notice any appreciable difference(s) between walking on the different surfaces? Are there any interesting insights that you can observe with the human eye? Do any conserved patterns exist within this time series and, if so, where are they?"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#have-you-seen-this-pattern",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#have-you-seen-this-pattern",
+    "title": "Exploring AI",
+    "section": "Have You Seen This Pattern?",
+    "text": "Have You Seen This Pattern?\nThe subsequence pattern or query (below) that we are interested in searching for in the time series (above) looks like this:\nQ_df = pd.read_csv(\"https://zenodo.org/record/4276880/files/carpet_query.csv?download=1\")\n\nplt.suptitle('Pattern or Query Subsequence, Q_df', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nplt.plot(Q_df, lw=2, color=\"C1\")  # Walking on cement\nplt.show()\n\npngThis pattern, Q_df, has a window length of m = 100 and it was taken from a completely independent walking sample. Does it look familiar at all? Does a similar pattern exist in our earlier time series, T_df? Can you tell which surface the robot dog was walking on when this query sample was collected?\nTo answer some of these questions, you can compare this specific query subsequence or pattern with the full time series by computing something called a “distance profile”. Essentially, you take this single query, Q_df, and compare it to every single subsequence in T_df by computing all possible (z-normalized Euclidean) pairwise distances. So, the distance profile is simply a 1-dimensional vector that tells you exactly how similar/dissimilar Q_df is to every subsequence (of the same length) found in T_df. Now, a naive algorithm for computing the distance profile would take O(n*m) time to process but, luckily, we can do much better than this as there exists a super efficient approach called “Mueen’s Algorithm for Similarity Search” (MASS) that is able to compute the distance profile in much faster O(n*log(n)) time (log base 2). Now, this may not be a big deal if you only have a few short time series to analyze but if you need to repeat this process many times with different query subsequences then things can add up quickly. In fact, as the length of the time series, n, and/or the length of the query subsequence, m, gets much longer, the naive algorithm would take way too much time!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#computing-the-distance-profile-with-mass",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#computing-the-distance-profile-with-mass",
+    "title": "Exploring AI",
+    "section": "Computing the Distance Profile with MASS",
+    "text": "Computing the Distance Profile with MASS\nSo, given a query subsequence, Q_df, and a time series, T_df, we can perform a fast similarity search and compute a distance profile using the stumpy.mass function in STUMPY:\ndistance_profile = stumpy.mass(Q_df[\"Acceleration\"], T_df[\"Acceleration\"])\nAnd, since the distance_profile contains the full list of pairwise distances between Q_df and every subsequence within T_df, we can retrieve the most similar subsequence from T_df by finding the smallest distance value in distance_profile and extracting its positional index:\nidx = np.argmin(distance_profile)\n\nprint(f\"The nearest neighbor to `Q_df` is located at index {idx} in `T_df`\")\nThe nearest neighbor to `Q_df` is located at index 7479 in `T_df`\nSo, to answer our earlier question of “Does a similar pattern exist in our earlier time series, T_df?”, let’s go ahead and plot the most similar subsequence in T_df, which is located at index 7479 (blue), and overlay this with our query pattern, Q_df, (orange):\n# Since MASS computes z-normalized Euclidean distances, we should z-normalize our subsequences before plotting\nQ_z_norm = stumpy.core.z_norm(Q_df.values)\nnn_z_norm = stumpy.core.z_norm(T_df.values[idx:idx+len(Q_df)])\n\nplt.suptitle('Comparing The Query To Its Nearest Neighbor', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nplt.plot(Q_z_norm, lw=2, color=\"C1\", label=\"Query Subsequence, Q_df\")\nplt.plot(nn_z_norm, lw=2, label=\"Nearest Neighbor Subsequence From T_df\")\nplt.legend()\nplt.show()\n\n\n\npng\n\n\nNotice that even though the query subsequence does not perfectly match its nearest neighbor, STUMPY was still able to find it! And then, to answer the second question of “Can you tell which surface the robot dog was walking on when this query sample was collected?”, we can look at precisely where idx is located within T_df:\nplt.suptitle('Sony AIBO Robot Dog Dataset, T_df', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nplt.plot(T_df)\nplt.text(2000, 4.5, 'Cement', color=\"black\", fontsize=20)\nplt.text(10000, 4.5, 'Cement', color=\"black\", fontsize=20)\nax = plt.gca()\nrect = Rectangle((5000, -4), 3000, 10, facecolor='lightgrey')\nax.add_patch(rect)\nplt.text(6000, 4.5, 'Carpet', color=\"black\", fontsize=20)\nplt.plot(range(idx, idx+len(Q_df)), T_df.values[idx:idx+len(Q_df)], lw=2, label=\"Nearest Neighbor Subsequence\")\nplt.legend()\nplt.show()\n\n\n\npng\n\n\nAs we can see above, the nearest neighbor (orange) to Q_df is a subsequence that is found when the robot dog was walking on carpet and, as it turns out, the Q_df was collected from an independent sample where the robot dog was walking on carpet too! To take this a step further, instead of only extracting the top nearest neighbor, we can look at where the top k = 16 nearest neighbors are located:\n# This simply returns the (sorted) positional indices of the top 16 smallest distances found in the distance_profile\nk = 16\nidxs = np.argpartition(distance_profile, k)[:k]\nidxs = idxs[np.argsort(distance_profile[idxs])]\nAnd then let’s plot all of these subsequences based on their index locations:\nplt.suptitle('Sony AIBO Robot Dog Dataset, T_df', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nplt.plot(T_df)\nplt.text(2000, 4.5, 'Cement', color=\"black\", fontsize=20)\nplt.text(10000, 4.5, 'Cement', color=\"black\", fontsize=20)\nax = plt.gca()\nrect = Rectangle((5000, -4), 3000, 10, facecolor='lightgrey')\nax.add_patch(rect)\nplt.text(6000, 4.5, 'Carpet', color=\"black\", fontsize=20)\n\nfor idx in idxs:\n    plt.plot(range(idx, idx+len(Q_df)), T_df.values[idx:idx+len(Q_df)], lw=2)\nplt.show()\n\n\n\npng\n\n\nUnsurprisingly, the top k = 16 nearest neighbors to Q_df (or best matches, shown in multiple colors above) can all be found when the robot dog was walking on the carpet (grey)!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#levaraging-stumpy-to-do-some-work-for-you",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#levaraging-stumpy-to-do-some-work-for-you",
+    "title": "Exploring AI",
+    "section": "Levaraging STUMPY To Do Some Work For You",
+    "text": "Levaraging STUMPY To Do Some Work For You\nUntil now, you’ve learned how to search for similar matches to your query using a raw distance profile. While this is feasible, STUMPY provides you with a super powerful function called stumpy.match that does even more work for you. One benefit of using stumpy.match is that, as it discovers each new neighbor, it applies an exclusion zone around it and this ensures that every match that is returned is actually a unique occurrence of your input query. In this section we will explore how to use it to produce the same results as above.\nFirst, we will call stumpy.match only with the two required parameters, Q, your query, and T, the time series you want to search within:\nmatches = stumpy.match(Q_df[\"Acceleration\"], T_df[\"Acceleration\"])\nstumpy.match returns a 2D numpy array, matches, which contains all matches of Q in T sorted by distance. The first column represents the (z-normalized) distance of each match to Q, while the second column represents the start index of the match in T. If we look at the very first row, we see that the best match of Q in T starts at position 7479 and has a z-normalized distance of 3.955. This corresponds exactly to the best match from before!\nNow, you might wonder which subsequences of T count as matches of Q. Earlier, we manually sorted the distance profile in ascending order and defined the top 16 matches to be the 16 subsequences with the lowest distance. While we can emulate this behavior with stumpy.match (see the end of this section), the preferred way is to return all subsequences in T that are closer to than some threshold. This threshold is controlled specifying the max_distance parameter.\nSTUMPY tries to find a reasonable default value but, in general, this is very difficult because it largely depends on your particular dataset and/or domain. For example, if you have ECG data of a patient’s heartbeat and you want to match one specific beat, then you may consider using a smaller threshold since your time series may be highly regular. On the other hand, if you try to match a specific word in a voice recording, then you would probably need to use a larger threshold since the exact shape of your match could be influenced by how the speaker pronounces the given word.\nLet’s plot all of the discovered matches to see if we need to adjust our threshold:\n# Since MASS computes z-normalized Euclidean distances, we should z-normalize our subsequences before plotting\nQ_z_norm = stumpy.core.z_norm(Q_df.values)\n\nplt.suptitle('Comparing The Query To All Matches (Default max_distance)', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nfor match_distance, match_idx in matches:\n    match_z_norm = stumpy.core.z_norm(T_df.values[match_idx:match_idx+len(Q_df)])\n    plt.plot(match_z_norm, lw=2)\nplt.plot(Q_z_norm, lw=4, color=\"black\", label=\"Query Subsequence, Q_df\")\nplt.legend()\nplt.show()\n\n\n\npng\n\n\nWhile some of the main features are somewhat conserved across all of the matching subsequences, there seems to be a lot of artifacts as well.\nWith stumpy.match, you have two options for controlling the matching threshold. You can either specify a constant value (e.g., max_distance = 5.0) or provide a custom function. This function has to take one parameter, which will be the distance profile, D, computed between Q and T. This way, you can encode some dependency on the distance profile into your maximum distance threshold. The default maximum distance is max_distance = max(np.mean(D) - 2 * np.std(D), np.min(D)). This is the typical “two standard deviations below from the mean”.\nOf course, one has to experiment a bit with what an acceptable maximum distance so let’s try increasing it to “four standard deviations below the mean” (i.e., a smaller maximum distance).\nmatches_improved_max_distance = stumpy.match(\n    Q_df[\"Acceleration\"], \n    T_df[\"Acceleration\"],\n    max_distance=lambda D: max(np.mean(D) - 4 * np.std(D), np.min(D))\n)\n\n# Since MASS computes z-normalized Euclidean distances, we should z-normalize our subsequences before plotting\nQ_z_norm = stumpy.core.z_norm(Q_df.values)\n\nplt.suptitle('Comparing The Query To All Matches (Improved max_distance)', fontsize='30')\nplt.xlabel('Time', fontsize ='20')\nplt.ylabel('Acceleration', fontsize='20')\nfor match_distance, match_idx in matches_improved_max_distance:\n    match_z_norm = stumpy.core.z_norm(T_df.values[match_idx:match_idx+len(Q_df)])\n    plt.plot(match_z_norm, lw=2)\nplt.plot(Q_z_norm, lw=4, color=\"black\", label=\"Query Subsequence, Q_df\")\nplt.legend()\nplt.show()\n\n\n\npng\n\n\nWe see that this looks much more promising and we did indeed find very similar looking matches. Sometimes, one still is not interested in all matches in the specified region. The easiest way to adjust this is to set max_matches to the maximum number of matches you want. By default, max_matches = None, which means that all matches will be returned.\nEmulating Finding All Top-k Matches\nSometimes, you may not have decided what a good threshold would be and so you may still want to find the top-k matches. In those cases, you may find the need to deactivate the default exclusion zone altogether so that you can find matches that may be very close to each other (i.e., close index values) in T. This can be done by changing the default exclusion zone of m / 4 (where m is the window size) to zero. In STUMPY, since the exclusion zone is computed as int(np.ceil(m / config.STUMPY_EXCL_ZONE_DENOM)), we can change the exclusion zone by explicitly setting stumpy.config.STUMPY_EXCL_ZONE_DENOM before computing distances:\nm = Q_df[\"Acceleration\"].size\n# To set the exclusion zone to zero, set the denominator to np.`inf`\nstumpy.config.STUMPY_EXCL_ZONE_DENOM = np.inf\n\nmatches_top_16 = stumpy.match(\n    Q_df[\"Acceleration\"], \n    T_df[\"Acceleration\"],\n    max_distance=np.inf, # set the threshold to infinity include all subsequences\n    max_matches=16,      # find the top 16 matches\n)\n\nstumpy.config.STUMPY_EXCL_ZONE_DENOM = 4 # Reset the denominator to its default value\nTo show that this does the same as we did in the first part of the tutorial, we will assert that the newly found indices are equal to the indices we found above using the stumpy.mass method.\nnpt.assert_equal(matches_top_16[:,1], idxs)\nNo error, this means they are indeed returning the same matches!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#summary",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#summary",
+    "title": "Exploring AI",
+    "section": "Summary",
+    "text": "Summary\nAnd that’s it! You have now taken a known pattern of interest (or query), ran it through stumpy.mass using STUMPY, and you were able to quickly search for this pattern in another time series. Moreover, you learned how to use the stumpy.match function, to let stumpy handle a lot of the work for you. With this newfound knowledge, you can now go and search for patterns in your own time series projects. Happy coding!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#additional-note---distance-profiles-with-non-normalized-euclidean-distances",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#additional-note---distance-profiles-with-non-normalized-euclidean-distances",
+    "title": "Exploring AI",
+    "section": "Additional Note - Distance Profiles with Non-normalized Euclidean Distances",
+    "text": "Additional Note - Distance Profiles with Non-normalized Euclidean Distances\nThere are times when you may want to use non-normalized Euclidean distance as your measure of similarity/dissimilarity, and so you can do this by simply setting normalize=False when you are calling stumpy.mass. This same normalize=False parameter is also available for the following set of STUMPY functions: stumpy.stump, stumpy.stumped, stumpy.gpu_stump, and stumpy.stumpi. Additionally, the normalize=False is also available in stumpy.match."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#bonus-section---what-makes-mass-so-fast",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#bonus-section---what-makes-mass-so-fast",
+    "title": "Exploring AI",
+    "section": "Bonus Section - What Makes MASS So Fast?",
+    "text": "Bonus Section - What Makes MASS So Fast?\nThe reason why MASS is so much faster than a naive approach is because MASS uses Fast Fourier Transforms (FFT) to convert the data into the frequency domain and performs what is called a “convolution”, which reduces the m operations down to log(n) operations. You can read more about this in the original Matrix Profile I paper.\nHere’s a naive implementation of computing a distance profile:\nimport time\n\ndef compute_naive_distance_profile(Q, T):\n    Q = Q.copy()\n    T = T.copy()\n    n = len(T)\n    m = len(Q)\n    naive_distance_profile = np.empty(n - m + 1)\n\n    start = time.time()\n    Q = stumpy.core.z_norm(Q)\n    for i in range(n - m + 1):\n        naive_distance_profile[i] = np.linalg.norm(Q - stumpy.core.z_norm(T[i:i+m]))\n    naive_elapsed_time = time.time()-start\n    \n    print(f\"For n = {n} and m = {m}, the naive algorithm takes {np.round(naive_elapsed_time, 2)}s to compute the distance profile\")\n\n    return naive_distance_profile\nFor a random time series, T_random, with 1 million data points and a random query subsequence, Q_random:\nQ_random = np.random.rand(100)\nT_random = np.random.rand(1_000_000)\n\nnaive_distance_profile = compute_naive_distance_profile(Q_random, T_random)\nFor n = 1000000 and m = 100, the naive algorithm takes 15.92s to compute the distance profile\nThe naive algorithm takes some time to compute! However, MASS can handle this (and even larger data sets) in a blink of an eye:\nstart = time.time()\nmass_distance_profile = stumpy.mass(Q_random, T_random)\nmass_elapsed_time = time.time()-start\n\nprint(f\"For n = {len(T_random)} and m = {len(Q_random)}, the MASS algorithm takes {np.round(mass_elapsed_time, 2)}s to compute the distance profile\")\nFor n = 1000000 and m = 100, the MASS algorithm takes 0.06s to compute the distance profile\nAnd to be absolutely certain, let’s make sure and check that the output is the same from both methods:\nnpt.assert_almost_equal(naive_distance_profile, mass_distance_profile)\nSuccess, no errors! This means that both outputs are identical. Go ahead and give it a try!"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Pattern_Matching.html#resources",
+    "href": "tutorial/Tutorial_Pattern_Matching.html#resources",
+    "title": "Exploring AI",
+    "section": "Resources",
+    "text": "Resources\nThe Fastest Similarity Search Algorithm for Time Series Subsequences Under Euclidean Distance\nSTUMPY Documentation\nSTUMPY Matrix Profile Github Code Repository\n\n\n\n\nGem City Tech ML/AI"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#analyzing-arterial-blood-pressure-data-with-fluss-and-floss",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#analyzing-arterial-blood-pressure-data-with-fluss-and-floss",
+    "title": "Semantic Segmentation",
+    "section": "Analyzing Arterial Blood Pressure Data with FLUSS and FLOSS",
+    "text": "Analyzing Arterial Blood Pressure Data with FLUSS and FLOSS\nThis example utilizes the main takeaways from the Matrix Profile VIII research paper. For proper context, we highly recommend that you read the paper first but know that our implementations follow this paper closely.\nAccording to the aforementioned publication, “one of the most basic analyses one can perform on [increasing amounts of time series data being captured] is to segment it into homogeneous regions.” In other words, wouldn’t it be nice if you could take your long time series data and be able to segment or chop it up into k regions (where k is small) and with the ultimate goal of presenting only k short representative patterns to a human (or machine) annotator in order to produce labels for the entire dataset. These segmented regions are also known as “regimes”. Additionally, as an exploratory tool, one might uncover new actionable insights in the data that was previously undiscovered. Fast low-cost unipotent semantic segmentation (FLUSS) is an algorithm that produces something called an “arc curve” which annotates the raw time series with information about the likelihood of a regime change. Fast low-cost online semantic segmentation (FLOSS) is a variation of FLUSS that, according to the original paper, is domain agnostic, offers streaming capabilities with potential for actionable real-time intervention, and is suitable for real world data (i.e., does not assume that every region of the data belongs to a well-defined semantic segment).\nTo demonstrate the API and underlying principles, we will be looking at arterial blood pressure (ABP) data from from a healthy volunteer resting on a medical tilt table and will be seeing if we can detect when the table is tilted from a horizontal position to a vertical position. This is the same data that is presented throughout the original paper (above)."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#getting-started",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#getting-started",
+    "title": "Semantic Segmentation",
+    "section": "Getting Started",
+    "text": "Getting Started\nLet’s import the packages that we’ll need to load, analyze, and plot the data.\n%matplotlib inline\n\nimport pandas as pd\nimport numpy as np\nimport stumpy\nfrom stumpy.floss import _cac\nimport matplotlib.pyplot as plt\nfrom matplotlib.patches import Rectangle, FancyArrowPatch\nfrom matplotlib import animation\nfrom IPython.display import HTML\nimport os\n\nplt.style.use('https://raw.githubusercontent.com/TDAmeritrade/stumpy/main/docs/stumpy.mplstyle')"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#retrieve-the-data",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#retrieve-the-data",
+    "title": "Semantic Segmentation",
+    "section": "Retrieve the Data",
+    "text": "Retrieve the Data\ndf = pd.read_csv(\"https://zenodo.org/record/4276400/files/Semantic_Segmentation_TiltABP.csv?download=1\")\ndf.head()\n\n\n\n\n\n\n\n\ntime\n\n\nabp\n\n\n\n\n\n\n0\n\n\n0\n\n\n6832.0\n\n\n\n\n1\n\n\n1\n\n\n6928.0\n\n\n\n\n2\n\n\n2\n\n\n6968.0\n\n\n\n\n3\n\n\n3\n\n\n6992.0\n\n\n\n\n4\n\n\n4\n\n\n6980.0"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#visualizing-the-raw-data",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#visualizing-the-raw-data",
+    "title": "Semantic Segmentation",
+    "section": "Visualizing the Raw Data",
+    "text": "Visualizing the Raw Data\nplt.plot(df['time'], df['abp'])\nrect = Rectangle((24000,2400),2000,6000,facecolor='lightgrey')\nplt.gca().add_patch(rect)\nplt.show()\n\npngWe can clearly see that there is a change around time=25000 that corresponds to when the table was tilted upright."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#fluss",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#fluss",
+    "title": "Semantic Segmentation",
+    "section": "FLUSS",
+    "text": "FLUSS\nInstead of using the full dataset, let’s zoom in and analyze the 2,500 data points directly before and after x=25000 (see Figure 5 in the paper).\nstart = 25000 - 2500\nstop = 25000 + 2500\nabp = df.iloc[start:stop, 1]\nplt.plot(range(abp.shape[0]), abp)\nplt.ylim(2800, 8500)\nplt.axvline(x=2373, linestyle=\"dashed\")\n\nstyle=\"Simple, tail_width=0.5, head_width=6, head_length=8\"\nkw = dict(arrowstyle=style, color=\"k\")\n\n# regime 1\nrect = Rectangle((55,2500), 225, 6000, facecolor='lightgrey')\nplt.gca().add_patch(rect)\nrect = Rectangle((470,2500), 225, 6000, facecolor='lightgrey')\nplt.gca().add_patch(rect)\nrect = Rectangle((880,2500), 225, 6000, facecolor='lightgrey')\nplt.gca().add_patch(rect)\nrect = Rectangle((1700,2500), 225, 6000, facecolor='lightgrey')\nplt.gca().add_patch(rect)\narrow = FancyArrowPatch((75, 7000), (490, 7000), connectionstyle=\"arc3, rad=-.5\", **kw)\nplt.gca().add_patch(arrow)\narrow = FancyArrowPatch((495, 7000), (905, 7000), connectionstyle=\"arc3, rad=-.5\", **kw)\nplt.gca().add_patch(arrow)\narrow = FancyArrowPatch((905, 7000), (495, 7000), connectionstyle=\"arc3, rad=.5\", **kw)\nplt.gca().add_patch(arrow)\narrow = FancyArrowPatch((1735, 7100), (490, 7100), connectionstyle=\"arc3, rad=.5\", **kw)\nplt.gca().add_patch(arrow)\n\n# regime 2\nrect = Rectangle((2510,2500), 225, 6000, facecolor='moccasin')\nplt.gca().add_patch(rect)\nrect = Rectangle((2910,2500), 225, 6000, facecolor='moccasin')\nplt.gca().add_patch(rect)\nrect = Rectangle((3310,2500), 225, 6000, facecolor='moccasin')\nplt.gca().add_patch(rect)\narrow = FancyArrowPatch((2540, 7000), (3340, 7000), connectionstyle=\"arc3, rad=-.5\", **kw)\nplt.gca().add_patch(arrow)\narrow = FancyArrowPatch((2960, 7000), (2540, 7000), connectionstyle=\"arc3, rad=.5\", **kw)\nplt.gca().add_patch(arrow)\narrow = FancyArrowPatch((3340, 7100), (3540, 7100), connectionstyle=\"arc3, rad=-.5\", **kw)\nplt.gca().add_patch(arrow)\n\nplt.show()\n\n\n\npng\n\n\nRoughly, in the truncated plot above, we see that the segmentation between the two regimes occurs around time=2373 (vertical dotted line) where the patterns from the first regime (grey) don’t cross over to the second regime (orange) (see Figure 2 in the original paper). And so the “arc curve” is calculated by sliding along the time series and simply counting the number of times other patterns have “crossed over” that specific time point (i.e., “arcs”). Essentially, this information can be extracted by looking at the matrix profile indices (which tells you where along the time series your nearest neighbor is). And so, we’d expect the arc counts to be high where repeated patterns are near each other and low where there are no crossing arcs.\nBefore we compute the “arc curve”, we’ll need to first compute the standard matrix profile and we can approximately see that the window size is about 210 data points (thanks to the knowledge of the subject matter/domain expert).\nm = 210\nmp = stumpy.stump(abp, m=m)\nNow, to compute the “arc curve” and determine the location of the regime change, we can directly call the fluss function. However, note that fluss requires the following inputs:\n\nthe matrix profile indices mp[:, 1] (not the matrix profile distances)\nan appropriate subsequence length, L (for convenience, we’ll just choose it to be equal to the window size, m=210)\nthe number of regimes, n_regimes, to search for (2 regions in this case)\nan exclusion factor, excl_factor, to nullify the beginning and end of the arc curve (anywhere between 1-5 is reasonable according to the paper)\n\nL = 210\ncac, regime_locations = stumpy.fluss(mp[:, 1], L=L, n_regimes=2, excl_factor=1)\nNotice that fluss actually returns something called the “corrected arc curve” (CAC), which normalizes the fact that there are typically less arcs crossing over a time point near the beginning and end of the time series and more potential for cross overs near the middle of the time series. Additionally, fluss returns the regimes or location(s) of the dotted line(s). Let’s plot our original time series (top) along with the corrected arc curve (orange) and the single regime (vertical dotted line).\nfig, axs = plt.subplots(2, sharex=True, gridspec_kw={'hspace': 0})\naxs[0].plot(range(abp.shape[0]), abp)\naxs[0].axvline(x=regime_locations[0], linestyle=\"dashed\")\naxs[1].plot(range(cac.shape[0]), cac, color='C1')\naxs[1].axvline(x=regime_locations[0], linestyle=\"dashed\")\nplt.show()\n\n\n\npng\n\n\n:::{admonition} Added after STUMPY version 1.12.0 :class: note\nIn place of array slicing (i.e., mp[:, 0], mp[:, 1]), the matrix profile distances can be accessed directly through the P_ attribute and the matrix profile indices can be accessed through the I_ attribute:\nmp = stumpy.stump(T, m)\nprint(mp.P_, mp.I_)  # print the matrix profile and the matrix profile indices \nAdditionally, the left and right matrix profile indices can also be accessed through the left_I_ and right_I_ attributes, respectively. :::"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#floss",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#floss",
+    "title": "Semantic Segmentation",
+    "section": "FLOSS",
+    "text": "FLOSS\nUnlike FLUSS, FLOSS is concerned with streaming data, and so it calculates a modified version of the corrected arc curve (CAC) that is strictly one-directional (CAC_1D) rather than bidirectional. That is, instead of expecting cross overs to be equally likely from both directions, we expect more cross overs to point toward the future (and less to point toward the past). So, we can manually compute the CAC_1D\ncac_1d = _cac(mp[:, 3], L, bidirectional=False, excl_factor=1)  # This is for demo purposes only. Use floss() below!\nand compare the CAC_1D (blue) with the bidirectional CAC (orange) and we see that the global minimum are approximately in the same place (see Figure 10 in the original paper).\nfig, axs = plt.subplots(2, sharex=True, gridspec_kw={'hspace': 0})\naxs[0].plot(np.arange(abp.shape[0]), abp)\naxs[0].axvline(x=regime_locations[0], linestyle=\"dashed\")\naxs[1].plot(range(cac.shape[0]), cac, color='C1')\naxs[1].axvline(x=regime_locations[0], linestyle=\"dashed\")\naxs[1].plot(range(cac_1d.shape[0]), cac_1d)\nplt.show()\n\npng:::{admonition} Added after STUMPY version 1.12.0 :class: note\nIn place of mp[:, 2] and mp[:, 3], you can access the left and right matrix profile indices through the left_I_ and right_I_ attributes, respectively:\nmp = stumpy.stump(T, m)\nprint(mp.left_I_, mp.right_I_)  # print the left and right matrix profile indices  \n:::"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#streaming-data-with-floss",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#streaming-data-with-floss",
+    "title": "Semantic Segmentation",
+    "section": "Streaming Data with FLOSS",
+    "text": "Streaming Data with FLOSS\nInstead of manually computing CAC_1D like we did above on streaming data, we can actually call the floss function directly which instantiates a streaming object. To demonstrate the use of floss, let’s take some old_data and compute the matrix profile indices for it like we did above:\nold_data = df.iloc[20000:20000+5000, 1].values  # This is well before the regime change has occurred\n\nmp = stumpy.stump(old_data, m=m)\nNow, we could do what we did early and compute the bidirectional corrected arc curve but we’d like to see how the arc curve changes as a result of adding new data points. So, let’s define some new data that is to be streamed in:\nnew_data = df.iloc[25000:25000+5000, 1].values\nFinally, we call the floss function to initialize a streaming object and pass in:\n\nthe matrix profile generated from the old_data (only the indices are used)\nthe old data used to generate the matrix profile in 1.\nthe matrix profile window size, m=210\nthe subsequence length, L=210\nthe exclusion factor\n\nstream = stumpy.floss(mp, old_data, m=m, L=L, excl_factor=1)\nYou can now update the stream with a new data point, t, via the stream.update(t) function and this will slide your window over by one data point and it will automatically update:\n\nthe CAC_1D (accessed via the .cac_1d_ attribute)\nthe matrix profile (accessed via the .P_ attribute)\nthe matrix profile indices (accessed via the .I_ attribute)\nthe sliding window of data used to produce the CAC_1D (accessed via the .T_ attribute - this should be the same size as the length of the `old_data)\n\nLet’s continuously update our stream with the new_data one value at a time and store them in a list (you’ll see why in a second):\nwindows = []\nfor i, t in enumerate(new_data):\n    stream.update(t)\n    \n    if i % 100 == 0:\n        windows.append((stream.T_, stream.cac_1d_))\nBelow, you can see an animation that changes as a result of updating the stream with new data. For reference, we’ve also plotted the CAC_1D (orange) that we manually generated from above for the stationary data. You’ll see that halfway through the animation, the regime change occurs and the updated CAC_1D (blue) will be perfectly aligned with the orange curve.\nfig, axs = plt.subplots(2, sharex=True, gridspec_kw={'hspace': 0})\n\naxs[0].set_xlim((0, mp.shape[0]))\naxs[0].set_ylim((-0.1, max(np.max(old_data), np.max(new_data))))\naxs[1].set_xlim((0, mp.shape[0]))\naxs[1].set_ylim((-0.1, 1.1))\n\nlines = []\nfor ax in axs:\n    line, = ax.plot([], [], lw=2)\n    lines.append(line)\nline, = axs[1].plot([], [], lw=2)\nlines.append(line)\n    \ndef init():\n    for line in lines:\n        line.set_data([], [])\n    return lines\n\ndef animate(window):\n    data_out, cac_out = window \n    for line, data in zip(lines, [data_out, cac_out, cac_1d]):\n        line.set_data(np.arange(data.shape[0]), data)\n    return lines\n\nanim = animation.FuncAnimation(fig, animate, init_func=init,\n                               frames=windows, interval=100, \n                               blit=True)\n\nanim_out = anim.to_jshtml()\nplt.close()  # Prevents duplicate image from displaying\nif os.path.exists(\"None0000000.png\"):\n    os.remove(\"None0000000.png\")  # Delete rogue temp file \n\nHTML(anim_out)\n# anim.save('/tmp/semantic.mp4')\n\n\n\n\n\n\n&lt;input id=\"_anim_slider0b330c001b2741d99c8fa25efd312f76\" type=\"range\" class=\"anim-slider\"\n       name=\"points\" min=\"0\" max=\"1\" step=\"1\" value=\"0\"\n       oninput=\"anim0b330c001b2741d99c8fa25efd312f76.set_frame(parseInt(this.value));\"&gt;\n&lt;div class=\"anim-buttons\"&gt;\n  &lt;button title=\"Decrease speed\" aria-label=\"Decrease speed\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.slower()\"&gt;\n      &lt;i class=\"fa fa-minus\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"First frame\" aria-label=\"First frame\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.first_frame()\"&gt;\n    &lt;i class=\"fa fa-fast-backward\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Previous frame\" aria-label=\"Previous frame\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.previous_frame()\"&gt;\n      &lt;i class=\"fa fa-step-backward\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Play backwards\" aria-label=\"Play backwards\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.reverse_animation()\"&gt;\n      &lt;i class=\"fa fa-play fa-flip-horizontal\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Pause\" aria-label=\"Pause\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.pause_animation()\"&gt;\n      &lt;i class=\"fa fa-pause\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Play\" aria-label=\"Play\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.play_animation()\"&gt;\n      &lt;i class=\"fa fa-play\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Next frame\" aria-label=\"Next frame\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.next_frame()\"&gt;\n      &lt;i class=\"fa fa-step-forward\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Last frame\" aria-label=\"Last frame\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.last_frame()\"&gt;\n      &lt;i class=\"fa fa-fast-forward\"&gt;&lt;/i&gt;&lt;/button&gt;\n  &lt;button title=\"Increase speed\" aria-label=\"Increase speed\" onclick=\"anim0b330c001b2741d99c8fa25efd312f76.faster()\"&gt;\n      &lt;i class=\"fa fa-plus\"&gt;&lt;/i&gt;&lt;/button&gt;\n&lt;/div&gt;\n&lt;form title=\"Repetition mode\" aria-label=\"Repetition mode\" action=\"#n\" name=\"_anim_loop_select0b330c001b2741d99c8fa25efd312f76\"\n      class=\"anim-state\"&gt;\n  &lt;input type=\"radio\" name=\"state\" value=\"once\" id=\"_anim_radio1_0b330c001b2741d99c8fa25efd312f76\"\n         &gt;\n  &lt;label for=\"_anim_radio1_0b330c001b2741d99c8fa25efd312f76\"&gt;Once&lt;/label&gt;\n  &lt;input type=\"radio\" name=\"state\" value=\"loop\" id=\"_anim_radio2_0b330c001b2741d99c8fa25efd312f76\"\n         checked&gt;\n  &lt;label for=\"_anim_radio2_0b330c001b2741d99c8fa25efd312f76\"&gt;Loop&lt;/label&gt;\n  &lt;input type=\"radio\" name=\"state\" value=\"reflect\" id=\"_anim_radio3_0b330c001b2741d99c8fa25efd312f76\"\n         &gt;\n  &lt;label for=\"_anim_radio3_0b330c001b2741d99c8fa25efd312f76\"&gt;Reflect&lt;/label&gt;\n&lt;/form&gt;"
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#summary",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#summary",
+    "title": "Semantic Segmentation",
+    "section": "Summary",
+    "text": "Summary\nAnd that’s it! You’ve just learned the basics of how to identify segments within your data using the matrix profile indices and leveraging fluss and floss."
+  },
+  {
+    "objectID": "tutorial/Tutorial_Semantic_Segmentation.html#resources",
+    "href": "tutorial/Tutorial_Semantic_Segmentation.html#resources",
+    "title": "Semantic Segmentation",
+    "section": "Resources",
+    "text": "Resources\nMatrix Profile VIII\nSTUMPY Documentation\nSTUMPY Matrix Profile Github Code Repository\n\n\n\n\nGem City Tech ML/AI"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#matrix-profile-1",
+    "href": "tutorial/TheMatrixProfile.html#matrix-profile-1",
+    "title": "The Matrix Profile",
+    "section": "Matrix Profile",
+    "text": "Matrix Profile\nLet’s simplify this distance matrix.\nWe will only look at the nearest neighbor for each subsequence.\nWhen we do this it creates a Matrix Profile.\nMatrix Profile\na vector that stores the (z-normalized) Euclidean distance between any subsequence within a time series and its nearest neighbor"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#example",
+    "href": "tutorial/TheMatrixProfile.html#example",
+    "title": "The Matrix Profile",
+    "section": "Example",
+    "text": "Example\nLet’s take a step back and start with a simple illustrative example:\nTime Series with Length n = 13\ntime_series = [0, 1, 3, 2, 9, 1, 14, 15, 1, 2, 2, 10, 7]\nn = len(time_series)\nTo analyze this time series with length n = 13, we could:\n\nvisualize the data or\ncalculate global summary statistics (i.e., mean, median, mode, min, max).\n\nIf you had a much longer time series, then you may even feel compelled to build:\n\nan ARIMA model,\nperform anomaly detection, or\nattempt a forecasting model\n\nbut these methods can be complicated and may often have false positives or no interpretable insights."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#example-time-series-with-length-n-13",
+    "href": "tutorial/TheMatrixProfile.html#example-time-series-with-length-n-13",
+    "title": "The Matrix Profile",
+    "section": "Example: Time Series with Length n = 13",
+    "text": "Example: Time Series with Length n = 13\nLet’s take a step back and start with a simple illustrative example:\ntime_series = [0, 1, 3, 2, 9, 1, 14, 15, 1, 2, 2, 10, 7]\nn = len(time_series)\nTo analyze this time series with length n = 13, we could:\n\nvisualize the data or\ncalculate global summary statistics (i.e., mean, median, mode, min, max).\n\nIf you had a much longer time series, then you may even feel compelled to build:\n\nan ARIMA model,\nperform anomaly detection, or\nattempt a forecasting model\n\nbut these methods can be complicated and may often have false positives or no interpretable insights."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#euclidiean-distance",
+    "href": "tutorial/TheMatrixProfile.html#euclidiean-distance",
+    "title": "The Matrix Profile",
+    "section": "Euclidiean Distance",
+    "text": "Euclidiean Distance\nTake two points: (0,1,3,2) and (1,2,3,10).\n\nEuclidean Distance"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#but-wait-there-is-more",
+    "href": "tutorial/TheMatrixProfile.html#but-wait-there-is-more",
+    "title": "The Matrix Profile",
+    "section": "But wait, there is more",
+    "text": "But wait, there is more\nLet’s take this a step further.\nLet’s keep one subsequence the same (reference subsequence).\nThen let the second subsequence be a sliding window.\nTHEN compute the Euclidean distance for each window!\n The resulting vector of pairwise Euclidean distances is known as a distance profile.\n\nPairwise Euclidean Distance"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#trivial-match",
+    "href": "tutorial/TheMatrixProfile.html#trivial-match",
+    "title": "The Matrix Profile",
+    "section": "Trivial Match",
+    "text": "Trivial Match\nNot all of these distances are useful.\nSpecifically, the distance for the self match (or trivial match) isn’t informative since the distance will be always be zero when you are comparing a subsequence with itself."
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#matrix-profile-3",
+    "href": "tutorial/TheMatrixProfile.html#matrix-profile-3",
+    "title": "The Matrix Profile",
+    "section": "Matrix Profile",
+    "text": "Matrix Profile\nPractically, what this means is that the matrix profile is only interested in storing the smallest non-trivial distances from each distance profile, which significantly reduces the spatial complexity to O(n).\n\nMatrix Profile"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#time-series-matrix-profile",
+    "href": "tutorial/TheMatrixProfile.html#time-series-matrix-profile",
+    "title": "The Matrix Profile",
+    "section": "Time Series Matrix Profile",
+    "text": "Time Series Matrix Profile\nWe can now plot this matrix profile underneath our original time series. And, as it turns out, a reference subsequence with a small matrix profile value (i.e., it has a nearest neighbor significantly “closeby”) may indicate a possible pattern.\n\nWhile a reference subsequence with a large matrix profile value (i.e., its nearest neighbor is significantly “faraway”) may suggest the presence of an anomaly!\n\nTime Series Matrix Profile"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#in-prospective",
+    "href": "tutorial/TheMatrixProfile.html#in-prospective",
+    "title": "The Matrix Profile",
+    "section": "In Prospective",
+    "text": "In Prospective\nTo put this into perspective, imagine if you had a single sensor that collected data 20 times/min over the course of 5 years.\nThis would result:\nn = 20 * 60 * 24 * 364 * 5  # 20 times/min x 60 mins/hour x 24 hours/day x 365 days/year x 5 years\nprint(f\"There would be n = {n} data points\")\nThere would be n = 52416000 data points"
+  },
+  {
+    "objectID": "tutorial/TheMatrixProfile.html#the-brute-force-approach",
+    "href": "tutorial/TheMatrixProfile.html#the-brute-force-approach",
+    "title": "The Matrix Profile",
+    "section": "The Brute Force Approach",
+    "text": "The Brute Force Approach\nNow, it might seem pretty straightforward at this point but…\n\nWe need to do is consider how to compute the full distance matrix efficiently.\nLet’s start with the brute force approach:\nfor i in range(n-m+1):\n    for j in range(n-m+1):\n        D = 0\n        for k in range(m):\n            D += (time_series[i+k] - time_series[j+k])**2\n        D = math.sqrt(D)\nAt first glance, this may not look too bad but…\n if we start considering both the computational complexity as well as the spatial complexity then we begin to understand the real problem.\nIt turns out that, for longer time series (i.e., n &gt;&gt; 10,000) the computational complexity is \\(O(n^2m)\\) (as evidenced by the three for loops in the code above) and …\nthe spatial complexity for storing the full distance matrix is \\(O(n^2)\\)."
+  },
+  {
+    "objectID": "talk.html#stumpy-basics",
+    "href": "talk.html#stumpy-basics",
+    "title": "Matrix Profile",
+    "section": "STUMPY Basics",
+    "text": "STUMPY Basics\nThe Matrix Profile"
+  },
+  {
+    "objectID": "talk.html#tutoridals",
+    "href": "talk.html#tutoridals",
+    "title": "Matrix Profile",
+    "section": "Tutoridals",
+    "text": "Tutoridals\nLets take a walk through a tutorial\nWhat is a Matrix Profile.\nThe Matrix Profile\nSTUMPY Basics\nThe Matrix Profile"
+  },
+  {
+    "objectID": "talk.html#tutorials",
+    "href": "talk.html#tutorials",
+    "title": "Matrix Profile",
+    "section": "Tutorials",
+    "text": "Tutorials\nLets take a walk through a tutorial\nWhat is a Matrix Profile.\nTutorial: The Matrix Profile\n\nSTUMPY Basics\nTutorial: Stumpy Basics"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#stumpy-basids",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#stumpy-basids",
+    "title": "STUMPY Basic",
+    "section": "Stumpy Basids:",
+    "text": "Stumpy Basids:\nAnalyzing Motifs and Anomalies with STUMP\nThis tutorial utilizes the main takeaways from the research papers: Matrix Profile I & Matrix Profile II.\nTo explore the basic concepts, we’ll use the workhorse stump function to find interesting motifs (patterns) or discords (anomalies/novelties) and demonstrate these concepts with two different time series datasets:\n\nThe Steamgen dataset\nThe NYC taxi passengers dataset\n\nstump is Numba JIT-compiled version of the popular STOMP algorithm that is described in detail in the original Matrix Profile II paper. stump is capable of parallel computation and it performs an ordered search for patterns and outliers within a specified time series and takes advantage of the locality of some calculations to minimize the runtime."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#stumpy-basics",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#stumpy-basics",
+    "title": "STUMPY Basic",
+    "section": "Stumpy Basics:",
+    "text": "Stumpy Basics:\nAnalyzing Motifs and Anomalies with STUMP\nThis tutorial utilizes the main takeaways from the research papers:\nMatrix Profile I & Matrix Profile II.\n\nTo explore the basic concepts, we’ll use the workhorse stump function to find interesting motifs (patterns) or discords (anomalies/novelties) and demonstrate these concepts with two different time series datasets:\n\nThe Steamgen dataset\nThe NYC taxi passengers dataset\n\nstump is Numba JIT-compiled version of the popular STOMP algorithm that is described in detail in the original Matrix Profile II paper.\nstump is capable of parallel computation and it performs an ordered search for patterns and outliers within a specified time series and takes advantage of the locality of some calculations to minimize the runtime."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#example-the-steamgen-dataset",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#example-the-steamgen-dataset",
+    "title": "STUMPY Basic",
+    "section": "Example: the Steamgen Dataset",
+    "text": "Example: the Steamgen Dataset\nThis data was generated using fuzzy models applied to mimic a steam generator at the Abbott Power Plant in Champaign, IL. The data feature that we are interested in is the output steam flow telemetry that has units of kg/s and the data is “sampled” every three seconds with a total of 9,600 datapoints.\nsteam_df = pd.read_csv(\"https://zenodo.org/record/4273921/files/STUMPY_Basics_steamgen.csv?download=1\")\nsteam_df.head()\n\n\n\n\n\n\n\n\ndrum pressure\n\n\nexcess oxygen\n\n\nwater level\n\n\nsteam flow\n\n\n\n\n\n\n0\n\n\n320.08239\n\n\n2.506774\n\n\n0.032701\n\n\n9.302970\n\n\n\n\n1\n\n\n321.71099\n\n\n2.545908\n\n\n0.284799\n\n\n9.662621\n\n\n\n\n2\n\n\n320.91331\n\n\n2.360562\n\n\n0.203652\n\n\n10.990955\n\n\n\n\n3\n\n\n325.00252\n\n\n0.027054\n\n\n0.326187\n\n\n12.430107\n\n\n\n\n4\n\n\n326.65276\n\n\n0.285649\n\n\n0.753776\n\n\n13.681666"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#how-did-we-find-those-indexex",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#how-did-we-find-those-indexex",
+    "title": "STUMPY Basic",
+    "section": "How did we find those indexex?",
+    "text": "How did we find those indexex?\nSTUMP\nm = 640\nmp = stumpy.stump(steam_df['steam flow'], m)\nstump requires two parameters:\n\nA time series\nA window size, m\n\nIn this case, based on some domain expertise, we’ve chosen m = 640, which is roughly equivalent to half-hour windows. And, again, the output of stump is an array that contains all of the matrix profile values (i.e., z-normalized Euclidean distance to your nearest neighbor) and matrix profile indices in the first and second columns, respectively (we’ll ignore the third and fourth columns for now). To identify the index location of the motif we’ll need to find the index location where the matrix profile, mp[:, 0], has the smallest value:\nmotif_idx = np.argsort(mp[:, 0])[0]\n\nprint(f\"The motif is located at index {motif_idx}\")\nThe motif is located at index 643\nWith this motif_idx information, we can also identify the location of its nearest neighbor by cross-referencing the matrix profile indices, mp[:, 1]:\nnearest_neighbor_idx = mp[motif_idx, 1]\n\nprint(f\"The nearest neighbor is located at index {nearest_neighbor_idx}\")\nThe nearest neighbor is located at index 8724\nNow, let’s put all of this together and plot the matrix profile next to our raw data:\nfig, axs = plt.subplots(2, sharex=True, gridspec_kw={'hspace': 0})\nplt.suptitle('Motif (Pattern) Discovery', fontsize='30')\n\naxs[0].plot(steam_df['steam flow'].values)\naxs[0].set_ylabel('Steam Flow', fontsize='20')\nrect = Rectangle((motif_idx, 0), m, 40, facecolor='lightgrey')\naxs[0].add_patch(rect)\nrect = Rectangle((nearest_neighbor_idx, 0), m, 40, facecolor='lightgrey')\naxs[0].add_patch(rect)\naxs[1].set_xlabel('Time', fontsize ='20')\naxs[1].set_ylabel('Matrix Profile', fontsize='20')\naxs[1].axvline(x=motif_idx, linestyle=\"dashed\")\naxs[1].axvline(x=nearest_neighbor_idx, linestyle=\"dashed\")\naxs[1].plot(mp[:, 0])\nplt.show()\n\npngWhat we learn is that the global minima (vertical dashed lines) from the matrix profile correspond to the locations of the two subsequences that make up the motif pair! And the exact z-normalized Euclidean distance between these two subsequences is:\nmp[motif_idx, 0]\n5.4916198277694726\n:::{admonition} Added after STUMPY version 1.12.0 :class: note\nIn place of array slicing (i.e., mp[:, 0], mp[:, 1]), the matrix profile distances can be accessed directly through the P_ attribute and the matrix profile indices can be accessed through the I_ attribute:\nmp = stumpy.stump(T, m)\nprint(mp.P_, mp.I_)  # print the matrix profile and the matrix profile indices \nAdditionally, the left and right matrix profile indices can also be accessed through the left_I_ and right_I_ attributes, respectively. :::\nSo, this distance isn’t zero since we saw that the two subsequences aren’t an identical match but, relative to the rest of the matrix profile (i.e., compared to either the mean or median matrix profile values), we can understand that this motif is a significantly good match."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#how-did-we-find-those-indexes",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#how-did-we-find-those-indexes",
+    "title": "STUMPY Basic",
+    "section": "How did we find those indexes?",
+    "text": "How did we find those indexes?\n643 and 8724 ### STUMP\nm = 640\nmp = stumpy.stump(steam_df['steam flow'], m)\nstump requires two parameters:\n\nA time series\nA window size, m\n\nIn this case, based on some domain expertise, we’ve chosen m = 640, which is roughly equivalent to half-hour windows.\nThe output of stump is an array that contains all of:\n\nthe matrix profile values (i.e., z-normalized Euclidean distance to your nearest neighbor) and\nmatrix profile indices\n\nin the first and second columns, respectively (we’ll ignore the third and fourth columns for now)."
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#find-potential-anomalies-discords",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#find-potential-anomalies-discords",
+    "title": "STUMPY Basic",
+    "section": "Find Potential Anomalies (Discords)",
+    "text": "Find Potential Anomalies (Discords)\nwith STUMP\nConversely, the index location within our matrix profile that has the largest value (computed from stump above) is:\ndiscord_idx = np.argsort(mp[:, 0])[-1]\n\nprint(f\"The discord is located at index {discord_idx}\")\nThe discord is located at index 3864\nAnd the nearest neighbor to this discord has a distance that is quite far away:\nnearest_neighbor_distance = mp[discord_idx, 0]\n\nprint(f\"The nearest neighbor subsequence to this discord is {nearest_neighbor_distance} units away\")\nThe nearest neighbor subsequence to this discord is 23.476168367302023 units away\nThe subsequence located at this global maximum is also referred to as a discord, novelty, or “potential anomaly”:"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#nyc-taxi-passengers-dataset",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#nyc-taxi-passengers-dataset",
+    "title": "STUMPY Basic",
+    "section": "NYC Taxi Passengers Dataset",
+    "text": "NYC Taxi Passengers Dataset\nFirst, we’ll download historical data that represents the half-hourly average of the number of NYC taxi passengers over 75 days in the Fall of 2014.\nWe extract that data and insert it into a pandas dataframe, making sure the timestamps are stored as datetime objects and the values are of type float64. Note that we’ll do a little more data cleaning than above just so you can see an example where the timestamp is included. But be aware that stump does not actually use or need the timestamp column at all when computing the matrix profile.\ntaxi_df = pd.read_csv(\"https://zenodo.org/record/4276428/files/STUMPY_Basics_Taxi.csv?download=1\")\ntaxi_df['value'] = taxi_df['value'].astype(np.float64)\ntaxi_df['timestamp'] = pd.to_datetime(taxi_df['timestamp'], errors='ignore')\ntaxi_df.head()\n            timestamp    value\n0 2014-10-01 00:00:00  12751.0\n1 2014-10-01 00:30:00   8767.0\n2 2014-10-01 01:00:00   7005.0\n3 2014-10-01 01:30:00   5257.0\n4 2014-10-01 02:00:00   4189.0"
+  },
+  {
+    "objectID": "tutorial/Tutorial_STUMPY_Basics.html#solar-flares",
+    "href": "tutorial/Tutorial_STUMPY_Basics.html#solar-flares",
+    "title": "STUMPY Basic",
+    "section": "Solar Flares",
+    "text": "Solar Flares"
+  }
+]

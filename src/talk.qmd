@@ -1,0 +1,91 @@
+---
+title: "Matrix Profile"
+order: 1
+format: revealjs
+subtitle: "Fast, effective tool for timeseries."
+date: "2024"
+author: "Presented by Evelyn J. Boettcher"
+fig-cap-location: margin 
+title-slide-attributes: 
+    data-background-image: 'img/logos/gem_cityML_slide.png'
+    data-background-size: "100% 100%"
+    data-background-position: "0%"
+    data-background-opacity: "0.95" 
+
+bibliography: references.bib
+---
+
+## Matrix Profile
+
+### OutlinY
+
+* STUMPy
+* What is a Matrix Profile
+* Why would I use this
+* Examples: Pattern Matching
+* Examples: Solar Flares
+* Upcoming talks
+
+
+---
+
+## Stumpy
+
+STUMPY is a powerful and scalable Python library (built by Ameritrade) that efficiently computes something called the matrix profile, which is just an academic way of saying “for every (green) subsequence within your time series, automatically identify its corresponding nearest-neighbor (grey)”:
+
+![](img/stumpy_demo.gif)
+
+Once you’ve computed your matrix profile (middle panel above) it can then be used for a variety of time series data mining tasks such as:
+
+----
+### What is it used for
+
+* pattern/motif (approximately repeated subsequences within a longer time series) discovery
+* anomaly/novelty (discord) discovery
+* shapelet discovery
+* semantic segmentation
+* streaming (on-line) data
+* fast approximate matrix profiles
+* time series chains (temporally ordered set of subsequence patterns)
+* snippets for summarizing long time series
+* pan matrix profiles for selecting the best subsequence window size(s)
+
+and more …
+
+
+## Tutorials
+
+Lets take a walk through a tutorial  
+
+### What is a Matrix Profile.
+
+
+Tutorial: [The Matrix Profile](tutorial/TheMatrixProfile.html)  
+<br>
+
+### STUMPY Basics
+
+
+Tutorial: [Stumpy Basics](tutorial/Tutorial_STUMPY_Basics.html)  
+
+
+## Thank you
+
+### Upcoming talks
+ 
+* Sept 19th: Tutorial on ML technique (STUMP) for time series data.
+* Oct 17th: Three speakers on Diffusion Models
+* Nov. 21st: Duel numbers and Auto Differentiation.
+* Dec TBD: Holiday Party
+
+Lastly, the 3rd annual AI art contest from Nov - Dec 5th is back!  
+
+Rules are simple:  
+Post a Dayton Themed AI generated art on the GemCity.TECH discord server.   
+Winner is announced at the GemCity.TECH holiday party.  
+
+### Questions
+<br> 
+
+
+

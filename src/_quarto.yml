@@ -1,0 +1,25 @@
+project:
+  title: "Exploring AI"
+  type: website
+  output-dir: ../docs
+format:
+  html:
+    code-fold: true
+    html-math-method: katex
+  revealjs:
+    theme: [default, evelyn.scss]
+    css: evelyn.css
+    logo: './img/logos/DidactexLogo.png'
+    footer: "Gem City Tech ML/AI"
+    scrollable: true
+    transition: slide
+    transition-speed: fast 
+    chalkboard: 
+      buttons: true
+
+execute:
+  echo: false
+  output: true
+  error: false
+
+jupyter: python3

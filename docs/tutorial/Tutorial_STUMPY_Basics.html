@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.4.553">
+
+  <meta name="author" content="STUMP">
+  <meta name="dcterms.date" content="2023-12-31">
+  <title>Exploring AI - STUMPY Basic</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
+  <link rel="stylesheet" href="../evelyn.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/logos/gem_cityML_slide.png" data-background-opacity="0.95" data-background-position="0%" data-background-size="100% 100%" class="quarto-title-block center">
+  <h1 class="title">STUMPY Basic</h1>
+  <p class="subtitle">Fast, effective tool for timeseries.</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+STUMP 
+</div>
+</div>
+</div>
+
+  <p class="date">2023-12-31</p>
+</section>
+<section id="stumpy-basics" class="slide level2 scrollable">
+<h2>Stumpy Basics:</h2>
+<h3 id="analyzing-motifs-and-anomalies-with-stump">Analyzing Motifs and Anomalies with STUMP</h3>
+<p>This tutorial utilizes the main takeaways from the research papers:<br>
+<a href="http://www.cs.ucr.edu/~eamonn/PID4481997_extend_Matrix%20Profile_I.pdf">Matrix Profile I</a> &amp; <a href="http://www.cs.ucr.edu/~eamonn/STOMP_GPU_final_submission_camera_ready.pdf">Matrix Profile II</a>.<br>
+<br></p>
+<p>To explore the basic concepts, we’ll use the workhorse <code>stump</code> function to find interesting motifs (patterns) or discords (anomalies/novelties) and demonstrate these concepts with two different time series datasets:</p>
+<ol type="1">
+<li>The Steamgen dataset</li>
+<li>The NYC taxi passengers dataset</li>
+</ol>
+<p><code>stump</code> is Numba JIT-compiled version of the popular STOMP algorithm that is described in detail in the original <a href="http://www.cs.ucr.edu/~eamonn/STOMP_GPU_final_submission_camera_ready.pdf">Matrix Profile II</a> paper.<br>
+<code>stump</code> is capable of parallel computation and it performs an ordered search for patterns and outliers within a specified time series and takes advantage of the locality of some calculations to minimize the runtime.</p>
+</section>
+<section id="getting-started" class="slide level2">
+<h2>Getting Started</h2>
+<p>Let’s import the packages that we’ll need to load, analyze, and plot the data.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-2"><a></a></span>
+<span id="cb1-3"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a></a><span class="im">import</span> stumpy</span>
+<span id="cb1-5"><a></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a></a><span class="im">import</span> matplotlib.dates <span class="im">as</span> dates</span>
+<span id="cb1-8"><a></a><span class="im">from</span> matplotlib.patches <span class="im">import</span> Rectangle</span>
+<span id="cb1-9"><a></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
+<span id="cb1-10"><a></a></span>
+<span id="cb1-11"><a></a>plt.style.use(<span class="st">'https://raw.githubusercontent.com/TDAmeritrade/stumpy/main/docs/stumpy.mplstyle'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="what-is-a-motif" class="slide level2">
+<h2>What is a Motif?</h2>
+<p>Time series <em>motifs</em> are approximately repeated subsequences found within a longer time series.<br>
+Saying that a subsequence is “approximately repeated” requires that you are able to compare subsequences to each other.<br>
+<br> In the case of STUMPY, all subsequences within a time series can be compared by computing the pairwise z-normalized Euclidean distances and then storing only the index to its nearest neighbor.<br>
+<br> This nearest neighbor distance vector is referred to as the <code>matrix profile</code> and the index to each nearest neighbor within the time series is referred to as the <code>matrix profile index</code>.<br>
+<br><br>
+Luckily, the <code>stump</code> function takes in any time series (with floating point values) and computes the matrix profile along with the matrix profile indices and, in turn, one can immediately find time series motifs.</p>
+</section>
+<section id="example-the-steamgen-dataset" class="slide level2">
+<h2>Example: the Steamgen Dataset</h2>
+<p>This data was generated using fuzzy models applied to mimic a steam generator at the Abbott Power Plant in Champaign, IL. The data feature that we are interested in is the output steam flow telemetry that has units of kg/s and the data is “sampled” every three seconds with a total of 9,600 datapoints.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>steam_df <span class="op">=</span> pd.read_csv(<span class="st">"https://zenodo.org/record/4273921/files/STUMPY_Basics_steamgen.csv?download=1"</span>)</span>
+<span id="cb2-2"><a></a>steam_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+drum pressure
+</th>
+<th>
+excess oxygen
+</th>
+<th>
+water level
+</th>
+<th>
+steam flow
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+320.08239
+</td>
+<td>
+2.506774
+</td>
+<td>
+0.032701
+</td>
+<td>
+9.302970
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+321.71099
+</td>
+<td>
+2.545908
+</td>
+<td>
+0.284799
+</td>
+<td>
+9.662621
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+320.91331
+</td>
+<td>
+2.360562
+</td>
+<td>
+0.203652
+</td>
+<td>
+10.990955
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+325.00252
+</td>
+<td>
+0.027054
+</td>
+<td>
+0.326187
+</td>
+<td>
+12.430107
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+326.65276
+</td>
+<td>
+0.285649
+</td>
+<td>
+0.753776
+</td>
+<td>
+13.681666
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="visualizing-the-steamgen-dataset" class="slide level2">
+<h2>Visualizing the Steamgen Dataset</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a>plt.suptitle(<span class="st">'Steamgen Dataset'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb3-2"><a></a>plt.xlabel(<span class="st">'Time'</span>, fontsize <span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb3-3"><a></a>plt.ylabel(<span class="st">'Steam Flow'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb3-4"><a></a>plt.plot(steam_df[<span class="st">'steam flow'</span>].values)</span>
+<span id="cb3-5"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_7_0.png" width="850" alt="png">.</p>
+<h4 id="do-you-see-a-pattern">Do you see a pattern?</h4>
+</section>
+<section id="manually-finding-a-motif" class="slide level2">
+<h2>Manually Finding a Motif</h2>
+<p>Here’s what you should be looking for: <strong>Motif</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>m <span class="op">=</span> <span class="dv">640</span></span>
+<span id="cb4-2"><a></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>)</span>
+<span id="cb4-3"><a></a>plt.suptitle(<span class="st">'Steamgen Dataset'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb4-4"><a></a>axs[<span class="dv">0</span>].set_ylabel(<span class="st">"Steam Flow"</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb4-5"><a></a>axs[<span class="dv">0</span>].plot(steam_df[<span class="st">'steam flow'</span>], alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-6"><a></a>axs[<span class="dv">0</span>].plot(steam_df[<span class="st">'steam flow'</span>].iloc[<span class="dv">643</span>:<span class="dv">643</span><span class="op">+</span>m])</span>
+<span id="cb4-7"><a></a>axs[<span class="dv">0</span>].plot(steam_df[<span class="st">'steam flow'</span>].iloc[<span class="dv">8724</span>:<span class="dv">8724</span><span class="op">+</span>m])</span>
+<span id="cb4-8"><a></a>rect <span class="op">=</span> Rectangle((<span class="dv">643</span>, <span class="dv">0</span>), m, <span class="dv">40</span>, facecolor<span class="op">=</span><span class="st">'lightgrey'</span>)</span>
+<span id="cb4-9"><a></a>axs[<span class="dv">0</span>].add_patch(rect)</span>
+<span id="cb4-10"><a></a>rect <span class="op">=</span> Rectangle((<span class="dv">8724</span>, <span class="dv">0</span>), m, <span class="dv">40</span>, facecolor<span class="op">=</span><span class="st">'lightgrey'</span>)</span>
+<span id="cb4-11"><a></a>axs[<span class="dv">0</span>].add_patch(rect)</span>
+<span id="cb4-12"><a></a>axs[<span class="dv">1</span>].set_xlabel(<span class="st">"Time"</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb4-13"><a></a>axs[<span class="dv">1</span>].set_ylabel(<span class="st">"Steam Flow"</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb4-14"><a></a>axs[<span class="dv">1</span>].plot(steam_df[<span class="st">'steam flow'</span>].values[<span class="dv">643</span>:<span class="dv">643</span><span class="op">+</span>m], color<span class="op">=</span><span class="st">'C1'</span>)</span>
+<span id="cb4-15"><a></a>axs[<span class="dv">1</span>].plot(steam_df[<span class="st">'steam flow'</span>].values[<span class="dv">8724</span>:<span class="dv">8724</span><span class="op">+</span>m], color<span class="op">=</span><span class="st">'C2'</span>)</span>
+<span id="cb4-16"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section class="slide level2">
+
+<p><img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_10_0.png" alt="png">.</p>
+<p>The motif (pattern) that we are looking for is highlighted above and yet it is still very hard to be certain that the orange and green subsequences are a match (upper panel).<br>
+If we zoom in on them and overlay the subsequences on top each other (lower panel), we can clearly see that the motif is very similar!</p>
+<p>The fundamental value of computing the matrix profile is that it not only allows you to quickly find motifs but it also identifies the nearest neighbor for all subsequences within your time series.</p>
+</section>
+<section id="how-did-we-find-those-indexes" class="slide level2 scrollable">
+<h2>How did we find those indexes?</h2>
+<p>643 and 8724 ### STUMP</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>m <span class="op">=</span> <span class="dv">640</span></span>
+<span id="cb5-2"><a></a>mp <span class="op">=</span> stumpy.stump(steam_df[<span class="st">'steam flow'</span>], m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>stump</code> requires two parameters:</p>
+<ol type="1">
+<li>A time series</li>
+<li>A window size, <code>m</code></li>
+</ol>
+<p>In this case, based on some domain expertise, we’ve chosen <code>m = 640</code>, which is roughly equivalent to half-hour windows.<br>
+The output of <code>stump</code> is an array that contains all of:</p>
+<ul>
+<li>the matrix profile values (i.e., z-normalized Euclidean distance to your nearest neighbor) and</li>
+<li>matrix profile indices</li>
+</ul>
+<p>in the first and second columns, respectively (we’ll ignore the third and fourth columns for now).</p>
+</section>
+<section class="slide level2">
+
+<p>To identify the index location of the motif we’ll need to find the index location where the matrix profile, <code>mp[:, 0]</code>, has the smallest value:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>motif_idx <span class="op">=</span> np.argsort(mp[:, <span class="dv">0</span>])[<span class="dv">0</span>]</span>
+<span id="cb6-2"><a></a></span>
+<span id="cb6-3"><a></a><span class="bu">print</span>(<span class="ss">f"The motif is located at index </span><span class="sc">{</span>motif_idx<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>The motif is located at index 643</code></pre>
+<p>With this <code>motif_idx</code> information, we can also identify the location of its nearest neighbor by cross-referencing the matrix profile indices, <code>mp[:, 1]</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a>nearest_neighbor_idx <span class="op">=</span> mp[motif_idx, <span class="dv">1</span>]</span>
+<span id="cb8-2"><a></a></span>
+<span id="cb8-3"><a></a><span class="bu">print</span>(<span class="ss">f"The nearest neighbor is located at index </span><span class="sc">{</span>nearest_neighbor_idx<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>The nearest neighbor is located at index 8724</code></pre>
+</section>
+<section class="slide level2">
+
+<p>Now, let’s put all of this together and plot the matrix profile next to our raw data:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, sharex<span class="op">=</span><span class="va">True</span>, gridspec_kw<span class="op">=</span>{<span class="st">'hspace'</span>: <span class="dv">0</span>})</span>
+<span id="cb10-2"><a></a>plt.suptitle(<span class="st">'Motif (Pattern) Discovery'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb10-3"><a></a></span>
+<span id="cb10-4"><a></a>axs[<span class="dv">0</span>].plot(steam_df[<span class="st">'steam flow'</span>].values)</span>
+<span id="cb10-5"><a></a>axs[<span class="dv">0</span>].set_ylabel(<span class="st">'Steam Flow'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb10-6"><a></a>rect <span class="op">=</span> Rectangle((motif_idx, <span class="dv">0</span>), m, <span class="dv">40</span>, facecolor<span class="op">=</span><span class="st">'lightgrey'</span>)</span>
+<span id="cb10-7"><a></a>axs[<span class="dv">0</span>].add_patch(rect)</span>
+<span id="cb10-8"><a></a>rect <span class="op">=</span> Rectangle((nearest_neighbor_idx, <span class="dv">0</span>), m, <span class="dv">40</span>, facecolor<span class="op">=</span><span class="st">'lightgrey'</span>)</span>
+<span id="cb10-9"><a></a>axs[<span class="dv">0</span>].add_patch(rect)</span>
+<span id="cb10-10"><a></a>axs[<span class="dv">1</span>].set_xlabel(<span class="st">'Time'</span>, fontsize <span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb10-11"><a></a>axs[<span class="dv">1</span>].set_ylabel(<span class="st">'Matrix Profile'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb10-12"><a></a>axs[<span class="dv">1</span>].axvline(x<span class="op">=</span>motif_idx, linestyle<span class="op">=</span><span class="st">"dashed"</span>)</span>
+<span id="cb10-13"><a></a>axs[<span class="dv">1</span>].axvline(x<span class="op">=</span>nearest_neighbor_idx, linestyle<span class="op">=</span><span class="st">"dashed"</span>)</span>
+<span id="cb10-14"><a></a>axs[<span class="dv">1</span>].plot(mp[:, <span class="dv">0</span>])</span>
+<span id="cb10-15"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_19_0.png" class="margin-caption r-stretch" width="600"></section>
+<section class="slide level2">
+
+
+<img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_19_0.png" class="margin-caption r-stretch" data-align="center"><p>The global minima (vertical dashed lines) from the matrix profile correspond to the locations of the two subsequences that make up the motif pair!<br>
+And the z-normalized Euclidean distance between these two subsequences is:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a>mp[motif_idx, <span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>5.4916198277694726</code></pre>
+</section>
+<section id="find-potential-anomalies-discords" class="slide level2">
+<h2>Find Potential Anomalies (Discords)</h2>
+<h3 id="with-stump">with STUMP</h3>
+<p>Conversely, the index location within our matrix profile that has the largest value (computed from <code>stump</code> above) is:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a></a>discord_idx <span class="op">=</span> np.argsort(mp[:, <span class="dv">0</span>])[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb13-2"><a></a></span>
+<span id="cb13-3"><a></a><span class="bu">print</span>(<span class="ss">f"The discord is located at index </span><span class="sc">{</span>discord_idx<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>The discord is located at index 3864</code></pre>
+<p>And the nearest neighbor to this discord has a distance that is quite far away:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a></a>nearest_neighbor_distance <span class="op">=</span> mp[discord_idx, <span class="dv">0</span>]</span>
+<span id="cb15-2"><a></a></span>
+<span id="cb15-3"><a></a><span class="bu">print</span>(<span class="ss">f"The nearest neighbor subsequence to this discord is </span><span class="sc">{</span>nearest_neighbor_distance<span class="sc">}</span><span class="ss"> units away"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>The nearest neighbor subsequence to this discord is 23.476168367302023 units away</code></pre>
+<p>The subsequence located at this global maximum is also referred to as a discord, novelty, or “potential anomaly”:</p>
+</section>
+<section class="slide level2">
+
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, sharex<span class="op">=</span><span class="va">True</span>, gridspec_kw<span class="op">=</span>{<span class="st">'hspace'</span>: <span class="dv">0</span>})</span>
+<span id="cb17-2"><a></a>plt.suptitle(<span class="st">'Discord (Anomaly/Novelty) Discovery'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb17-3"><a></a></span>
+<span id="cb17-4"><a></a>axs[<span class="dv">0</span>].plot(steam_df[<span class="st">'steam flow'</span>].values)</span>
+<span id="cb17-5"><a></a>axs[<span class="dv">0</span>].set_ylabel(<span class="st">'Steam Flow'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb17-6"><a></a>rect <span class="op">=</span> Rectangle((discord_idx, <span class="dv">0</span>), m, <span class="dv">40</span>, facecolor<span class="op">=</span><span class="st">'lightgrey'</span>)</span>
+<span id="cb17-7"><a></a>axs[<span class="dv">0</span>].add_patch(rect)</span>
+<span id="cb17-8"><a></a>axs[<span class="dv">1</span>].set_xlabel(<span class="st">'Time'</span>, fontsize <span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb17-9"><a></a>axs[<span class="dv">1</span>].set_ylabel(<span class="st">'Matrix Profile'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb17-10"><a></a>axs[<span class="dv">1</span>].axvline(x<span class="op">=</span>discord_idx, linestyle<span class="op">=</span><span class="st">"dashed"</span>)</span>
+<span id="cb17-11"><a></a>axs[<span class="dv">1</span>].plot(mp[:, <span class="dv">0</span>])</span>
+<span id="cb17-12"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_28_0.png" class="margin-caption r-stretch quarto-figure-center"><p class="caption">png</p><h3 id="mastered-it-yet">Mastered it yet!</h3>
+<p>Lets look at two more data sets: NYC Taxi Passenger and Solar Flares</p>
+</section>
+<section id="nyc-taxi-passengers-dataset" class="slide level2">
+<h2>NYC Taxi Passengers Dataset</h2>
+<p>First, we’ll download historical data that represents the half-hourly average of the number of NYC taxi passengers over 75 days in the Fall of 2014.</p>
+<p>We extract that data and insert it into a pandas dataframe, making sure the timestamps are stored as <em>datetime</em> objects and the values are of type <em>float64</em>. Note that we’ll do a little more data cleaning than above just so you can see an example where the timestamp is included. But be aware that <code>stump</code> does not actually use or need the timestamp column at all when computing the matrix profile.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a></a>taxi_df <span class="op">=</span> pd.read_csv(<span class="st">"https://zenodo.org/record/4276428/files/STUMPY_Basics_Taxi.csv?download=1"</span>)</span>
+<span id="cb18-2"><a></a>taxi_df[<span class="st">'value'</span>] <span class="op">=</span> taxi_df[<span class="st">'value'</span>].astype(np.float64)</span>
+<span id="cb18-3"><a></a>taxi_df[<span class="st">'timestamp'</span>] <span class="op">=</span> pd.to_datetime(taxi_df[<span class="st">'timestamp'</span>], errors<span class="op">=</span><span class="st">'ignore'</span>)</span>
+<span id="cb18-4"><a></a>taxi_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb19-1"><a></a>            timestamp    value</span>
+<span id="cb19-2"><a></a>0 2014-10-01 00:00:00  12751.0</span>
+<span id="cb19-3"><a></a>1 2014-10-01 00:30:00   8767.0</span>
+<span id="cb19-4"><a></a>2 2014-10-01 01:00:00   7005.0</span>
+<span id="cb19-5"><a></a>3 2014-10-01 01:30:00   5257.0</span>
+<span id="cb19-6"><a></a>4 2014-10-01 02:00:00   4189.0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="visualizing-the-taxi-dataset" class="slide level2">
+<h2>Visualizing the Taxi Dataset</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a></a><span class="co"># This code is going to be utilized to control the axis labeling of the plots</span></span>
+<span id="cb20-2"><a></a>DAY_MULTIPLIER <span class="op">=</span> <span class="dv">7</span>  <span class="co"># Specify for the amount of days you want between each labeled x-axis tick</span></span>
+<span id="cb20-3"><a></a></span>
+<span id="cb20-4"><a></a>x_axis_labels <span class="op">=</span> taxi_df[(taxi_df.timestamp.dt.hour<span class="op">==</span><span class="dv">0</span>)][<span class="st">'timestamp'</span>].dt.strftime(<span class="st">'%b </span><span class="sc">%d</span><span class="st">'</span>).values[::DAY_MULTIPLIER]</span>
+<span id="cb20-5"><a></a>x_axis_labels[<span class="dv">1</span>::<span class="dv">2</span>] <span class="op">=</span> <span class="st">" "</span></span>
+<span id="cb20-6"><a></a>x_axis_labels, DAY_MULTIPLIER</span>
+<span id="cb20-7"><a></a></span>
+<span id="cb20-8"><a></a>plt.suptitle(<span class="st">'Taxi Passenger Raw Data'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb20-9"><a></a>plt.xlabel(<span class="st">'Window Start Date'</span>, fontsize <span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb20-10"><a></a>plt.ylabel(<span class="st">'Half-Hourly Average</span><span class="ch">\n</span><span class="st">Number of Taxi Passengers'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb20-11"><a></a>plt.plot(taxi_df[<span class="st">'value'</span>])</span>
+<span id="cb20-12"><a></a></span>
+<span id="cb20-13"><a></a>plt.xticks(np.arange(<span class="dv">0</span>, taxi_df[<span class="st">'value'</span>].shape[<span class="dv">0</span>], (<span class="dv">48</span><span class="op">*</span>DAY_MULTIPLIER)<span class="op">/</span><span class="dv">2</span>), x_axis_labels)</span>
+<span id="cb20-14"><a></a>plt.xticks(rotation<span class="op">=</span><span class="dv">75</span>)</span>
+<span id="cb20-15"><a></a>plt.minorticks_on()</span>
+<span id="cb20-16"><a></a>plt.margins(x<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb20-17"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section class="slide level2">
+
+<p><img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_33_0.png" alt="png">.</p>
+<p>It seems as if there is a general periodicity between spans of 1-day and 7-days.</p>
+<p>Likely explained by the fact that more people use taxis throughout the day than through the night and that it is reasonable to say most weeks have similar taxi-rider patterns.<br>
+Also, maybe there is an <strong>outlier</strong> just to the right of the window starting near the end of October but, other than that, there isn’t anything you can conclude from just looking at the raw data.</p>
+</section>
+<section id="generating-the-matrix-profile" class="slide level2">
+<h2>Generating the Matrix Profile</h2>
+<p>Again, defining the window size, <code>m</code>, usually requires some level of domain knowledge but we’ll demonstrate later on that <code>stump</code> is robust to changes in this parameter.<br>
+Since this data was taken half-hourly, we chose a value <code>m = 48</code> to represent the span of exactly one day:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a></a>d <span class="op">=</span> <span class="dv">24</span> <span class="op">*</span> <span class="dv">2</span> <span class="co"># 24 hours in a day and two measurements per hour</span></span>
+<span id="cb21-2"><a></a>m <span class="op">=</span> <span class="dv">48</span></span>
+<span id="cb21-3"><a></a>mp <span class="op">=</span> stumpy.stump(taxi_df[<span class="st">'value'</span>], m<span class="op">=</span>m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="visualizing-the-matrix-profile" class="slide level2">
+<h2>Visualizing the Matrix Profile</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a></a>plt.suptitle(<span class="st">'1-Day STUMP'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb22-2"><a></a>plt.xlabel(<span class="st">'Window Start'</span>, fontsize <span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb22-3"><a></a>plt.ylabel(<span class="st">'Matrix Profile'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb22-4"><a></a>plt.plot(mp[:, <span class="dv">0</span>])</span>
+<span id="cb22-5"><a></a></span>
+<span id="cb22-6"><a></a>plt.plot(<span class="dv">575</span>, <span class="fl">1.7</span>, marker<span class="op">=</span><span class="st">"v"</span>, markersize<span class="op">=</span><span class="dv">15</span>, color<span class="op">=</span><span class="st">'b'</span>)</span>
+<span id="cb22-7"><a></a>plt.text(<span class="dv">620</span>, <span class="fl">1.6</span>, <span class="st">'Columbus Day'</span>, color<span class="op">=</span><span class="st">"black"</span>, fontsize<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb22-8"><a></a>plt.plot(<span class="dv">1535</span>, <span class="fl">3.7</span>, marker<span class="op">=</span><span class="st">"v"</span>, markersize<span class="op">=</span><span class="dv">15</span>, color<span class="op">=</span><span class="st">'b'</span>)</span>
+<span id="cb22-9"><a></a>plt.text(<span class="dv">1580</span>, <span class="fl">3.6</span>, <span class="st">'Daylight Savings'</span>, color<span class="op">=</span><span class="st">"black"</span>, fontsize<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb22-10"><a></a>plt.plot(<span class="dv">2700</span>, <span class="fl">3.1</span>, marker<span class="op">=</span><span class="st">"v"</span>, markersize<span class="op">=</span><span class="dv">15</span>, color<span class="op">=</span><span class="st">'b'</span>)</span>
+<span id="cb22-11"><a></a>plt.text(<span class="dv">2745</span>, <span class="fl">3.0</span>, <span class="st">'Thanksgiving'</span>, color<span class="op">=</span><span class="st">"black"</span>, fontsize<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb22-12"><a></a>plt.plot(<span class="dv">30</span>, <span class="fl">.2</span>, marker<span class="op">=</span><span class="st">"^"</span>, markersize<span class="op">=</span><span class="dv">15</span>, color<span class="op">=</span><span class="st">'b'</span>, fillstyle<span class="op">=</span><span class="st">'none'</span>)</span>
+<span id="cb22-13"><a></a>plt.plot(<span class="dv">363</span>, <span class="fl">.2</span>, marker<span class="op">=</span><span class="st">"^"</span>, markersize<span class="op">=</span><span class="dv">15</span>, color<span class="op">=</span><span class="st">'b'</span>, fillstyle<span class="op">=</span><span class="st">'none'</span>) </span>
+<span id="cb22-14"><a></a>plt.xticks(np.arange(<span class="dv">0</span>, <span class="dv">3553</span>, (m<span class="op">*</span>DAY_MULTIPLIER)<span class="op">/</span><span class="dv">2</span>), x_axis_labels)</span>
+<span id="cb22-15"><a></a>plt.xticks(rotation<span class="op">=</span><span class="dv">75</span>)</span>
+<span id="cb22-16"><a></a>plt.minorticks_on()</span>
+<span id="cb22-17"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_38_0.png" class="margin-caption r-stretch quarto-figure-center"><p class="caption">png</p></section>
+<section id="understanding-the-matrix-profile" class="slide level2">
+<h2>Understanding the Matrix Profile</h2>
+<p>Let’s understand what we’re looking at.<br>
+<br></p>
+<h3 id="lowest-values">Lowest Values</h3>
+<p>The lowest values (open triangles) are considered a motif since they represent the pair of nearest neighbor subsequences with the smallest z-normalized Euclidean distance. Interestingly, the two lowest data points are <em>exactly</em> 7 days apart, which suggests that, in this dataset, there may be a periodicity of seven days in addition to the more obvious periodicity of one day.</p>
+<h3 id="highest-values">Highest Values</h3>
+<p>So what about the highest matrix profile values (filled triangles)? The subsequences that have the highest (local) values really emphasizes their uniqueness. We found that the top three peaks happened to correspond exactly with the timing of Columbus Day, Daylight Saving Time, and Thanksgiving, respectively.</p>
+</section>
+<section id="different-window-sizes" class="slide level2">
+<h2>Different Window Sizes</h2>
+<p>As we had mentioned above, <code>stump</code> should be robust to the choice of the window size parameter, <code>m</code>. Below, we demonstrate how manipulating the window size can have little impact on your resulting matrix profile by running <code>stump</code> with varying windows sizes.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a></a>days_dict <span class="op">=</span>{</span>
+<span id="cb23-2"><a></a>  <span class="st">"Half-Day"</span>: <span class="dv">24</span>,</span>
+<span id="cb23-3"><a></a>  <span class="st">"1-Day"</span>: <span class="dv">48</span>,</span>
+<span id="cb23-4"><a></a>  <span class="st">"2-Days"</span>: <span class="dv">96</span>,</span>
+<span id="cb23-5"><a></a>  <span class="st">"5-Days"</span>: <span class="dv">240</span>,</span>
+<span id="cb23-6"><a></a>  <span class="st">"7-Days"</span>: <span class="dv">336</span>,</span>
+<span id="cb23-7"><a></a>}</span>
+<span id="cb23-8"><a></a></span>
+<span id="cb23-9"><a></a>days_df <span class="op">=</span> pd.DataFrame.from_dict(days_dict, orient<span class="op">=</span><span class="st">'index'</span>, columns<span class="op">=</span>[<span class="st">'m'</span>])</span>
+<span id="cb23-10"><a></a>days_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+m
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Half-Day
+</th>
+<td>
+24
+</td>
+</tr>
+<tr>
+<th>
+1-Day
+</th>
+<td>
+48
+</td>
+</tr>
+<tr>
+<th>
+2-Days
+</th>
+<td>
+96
+</td>
+</tr>
+<tr>
+<th>
+5-Days
+</th>
+<td>
+240
+</td>
+</tr>
+<tr>
+<th>
+7-Days
+</th>
+<td>
+336
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="slide level2">
+
+<p>We purposely chose spans of time that correspond to reasonably intuitive day-lengths that could be chosen by a human.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">5</span>, sharex<span class="op">=</span><span class="va">True</span>, gridspec_kw<span class="op">=</span>{<span class="st">'hspace'</span>: <span class="dv">0</span>})</span>
+<span id="cb24-2"><a></a>fig.text(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="st">'Subsequence Start Date'</span>, ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb24-3"><a></a>fig.text(<span class="fl">0.08</span>, <span class="fl">0.5</span>, <span class="st">'Matrix Profile'</span>, va<span class="op">=</span><span class="st">'center'</span>, rotation<span class="op">=</span><span class="st">'vertical'</span>, fontsize<span class="op">=</span><span class="st">'20'</span>)</span>
+<span id="cb24-4"><a></a><span class="cf">for</span> i, varying_m <span class="kw">in</span> <span class="bu">enumerate</span>(days_df[<span class="st">'m'</span>].values):</span>
+<span id="cb24-5"><a></a>    mp <span class="op">=</span> stumpy.stump(taxi_df[<span class="st">'value'</span>], varying_m)</span>
+<span id="cb24-6"><a></a>    axs[i].plot(mp[:, <span class="dv">0</span>])</span>
+<span id="cb24-7"><a></a>    axs[i].set_ylim(<span class="dv">0</span>,<span class="fl">9.5</span>)</span>
+<span id="cb24-8"><a></a>    axs[i].set_xlim(<span class="dv">0</span>,<span class="dv">3600</span>)</span>
+<span id="cb24-9"><a></a>    title <span class="op">=</span> <span class="ss">f"m = </span><span class="sc">{</span>varying_m<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb24-10"><a></a>    axs[i].set_title(title, fontsize<span class="op">=</span><span class="dv">20</span>, y<span class="op">=</span><span class="fl">.5</span>)</span>
+<span id="cb24-11"><a></a>plt.xticks(np.arange(<span class="dv">0</span>, taxi_df.shape[<span class="dv">0</span>], (<span class="dv">48</span><span class="op">*</span>DAY_MULTIPLIER)<span class="op">/</span><span class="dv">2</span>), x_axis_labels)</span>
+<span id="cb24-12"><a></a>plt.xticks(rotation<span class="op">=</span><span class="dv">75</span>)</span>
+<span id="cb24-13"><a></a>plt.suptitle(<span class="st">'STUMP with Varying Window Sizes'</span>, fontsize<span class="op">=</span><span class="st">'30'</span>)</span>
+<span id="cb24-14"><a></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<img data-src="Tutorial_STUMPY_Basics_files/Tutorial_STUMPY_Basics_43_0.png" class="margin-caption r-stretch quarto-figure-center" width="650"><p class="caption">png</p></section>
+<section class="slide level2">
+
+<p>We can see that even with varying window sizes, our peaks stay prominent. But it looks as if all the non-peak values are converging towards each other.<br>
+This is why having a knowledge of the data-context is important prior to running <code>stump</code>, as it is helpful to have a window size that may capture a repeating pattern or anomaly within the dataset.</p>
+</section>
+<section id="solar-flares" class="slide level2">
+<h2>Solar Flares</h2>
+</section>
+<section id="bonus-section" class="slide level2">
+<h2>Bonus Section</h2>
+<h3 id="understanding-the-matrix-profile-columnar-output">Understanding the Matrix Profile Columnar Output</h3>
+<p>For any 1-D time series, <code>T</code>, its matrix profile, <code>mp</code>, computed from <code>stumpy.stump(T, m)</code> will contain 4 explicit columns, which we’ll describe in a moment. Implicitly, the <code>i</code>th row of the <code>mp</code> array corresponds to the set of (4) nearest neighbor values computed for the specific subsequence <code>T[i : i + m]</code>.</p>
+<p>The first column of the <code>mp</code> contains the matrix profile (nearest neighbor distance) value, <code>P</code> (note that due to zero-based indexing, the “first column” has a column index value of zero). The second column contains the (zero-based) index location, <code>I</code>, of where the (above) nearest neighbor is located along <code>T</code> (note that any negative index values are “bad” values and indicates that a nearest neighbor could not be found).</p>
+<p>So, for the <code>i</code>th subsequence <code>T[i : i + m]</code>, its nearest neighbor (located somewhere along <code>T</code>) has a starting index location of <code>I = mp[i, 1]</code> and, assuming that <code>I &gt;= 0</code>, this corresponds to the subsequence found at <code>T[I : I + m]</code>. And the matrix profile value for the <code>i</code>th subsequence, <code>P = [i, 0]</code>, is the exact (z-normalized Euclidean) distance between <code>T[i : i + m]</code> and <code>T[I : I + m]</code>. Note that the nearest neighbor index location, <code>I</code>, can be positioned ANYWHERE. That is, dependent upon the <code>i</code>th subsequence, its nearest neighbor, <code>I</code>, can be located before/to-the-“left” of <code>i</code> (i.e., <code>I &lt;= i</code>) or come after/to-the-“right” of <code>i</code> (i.e., <code>I &gt;= i</code>). In other words, there is no constraint on where a nearest neighbor is located. However, there may be a time when you might like to only know about a nearest neighbor that either comes before/after <code>i</code> and this is where columns 3 and 4 of <code>mp</code> come into play.</p>
+<p>The third column contains the (zero-based) index location, <code>IL</code>, of where the “left” nearest neighbor is located along <code>T</code>. Here, there is a constraint that <code>IL &lt; i</code> or that <code>IL</code> must come before/to-the-left of <code>i</code>. Thus, the “left nearest neighbor” for the <code>i</code>th subsequence would be located at <code>IL = mp[i, 2]</code> and corresponds to <code>T[IL : IL + m]</code>.<br>
+The fourth column contains the (zero-based) index location, <code>IR</code>, of where the “right” nearest neighbor is located along <code>T</code>. Here, there is a constraint that <code>IR &gt; i</code> or that <code>IR</code> must come after/to-the-right of <code>i</code>. Thus, the “right nearest neighbor” for the <code>i</code>th subsequence would be located at <code>IR = mp[i, 3]</code> and corresponds to <code>T[IR : IR + m]</code>.</p>
+<p>Again, note that any negative index values are “bad” values and indicates that a nearest neighbor could not be found.</p>
+<p>To reinforce this more concretely, let’s use the following <code>mp</code> array as an example:</p>
+<pre><code>array([[1.626257115121311,  202, -1,  202],
+       [1.7138456780667977,  65,  0,   65],
+       [1.880293454724256,   66,  0,   66],
+       [1.796922109741226,   67,  0,   67],
+       [1.4943082939628236,  11,  1,   11],
+       [1.4504278114808016,  12,  2,   12],
+       [1.6294354134867932,  19,  0,   19],
+       [1.5349365731102185, 229,  0,  229],
+       [1.3930265554289831, 186,  1,  186],
+       [1.5265881687159586, 187,  2,  187],
+       [1.8022253384245739,  33,  3,   33],
+       [1.4943082939628236,   4,  4,  118],
+       [1.4504278114808016,   5,  5,  137],
+       [1.680920620705546,  201,  6,  201],
+       [1.5625058007723722, 237,  8,  237],
+       [1.2860008417613522,  66,  9,   -1]]</code></pre>
+</section>
+<section class="slide level2">
+
+<p>Here, the subsequence at <code>i = 0</code> would correspond to the <code>T[0 : 0 + m]</code> subsequence and the nearest neighbor for this subsequence is located at <code>I = 202</code> (i.e., <code>mp[0, 1]</code>) and corresponds to the <code>T[202 : 202 + m]</code> subsequence. The z-normalized Euclidean distance between <code>T[0 : 0 + m]</code> and <code>T[202 : 202 + m]</code> is actually <code>P = 1.626257115121311</code> (i.e., <code>mp[0, 0]</code>). Next, notice that the location of the left nearest neighbor is <code>IL = -1</code> (i.e., <code>mp[0, 2]</code>) and, since negative indices are “bad”, this tells us that the left nearest neighbor could not be found. Hopefully, this makes sense since <code>T[0 : 0 + m]</code> is the first subsequence in <code>T</code> and there are no other subsequences that can possibly exist to the left of <code>T[0 : 0 + m]</code>! Conversely, the location of the right nearest neighbor is <code>IR = 202</code> (i.e., <code>mp[0, 3]</code>) and corresponds to the <code>T[202 : 202 + m]</code> subsequence.</p>
+<p>Additionally, the subsequence at <code>i = 5</code> would correspond to the <code>T[5 : 5 + m]</code> subsequence and the nearest neighbor for this subsequence is located at <code>I = 12</code> (i.e., <code>mp[5, 1]</code>) and corresponds to the <code>T[12 : 12 + m]</code> subsequence. The z-normalized Euclidean distance between <code>T[5 : 5 + m]</code> and <code>T[12 : 12 + m]</code> is actually <code>P = 1.4504278114808016</code> (i.e., <code>mp[5, 0]</code>). Next, the location of the left nearest neighbor is <code>IL = 2</code> (i.e., <code>mp[5, 2]</code>) and corresponds to <code>T[2 : 2 + m]</code>. Conversely, the location of the right nearest neighbor is <code>IR = 12</code> (i.e., <code>mp[5, 3]</code>) and corresponds to the <code>T[12 : 12 + m]</code> subsequence.</p>
+<p>Similarly, all other subsequences can be evaluated and interpreted using this approach!</p>
+</section>
+<section class="slide level2">
+
+<h3 id="find-top-k-motifs">Find Top-K Motifs</h3>
+<p>Now that you’ve computed the matrix profile, <code>mp</code>, for your time series and identified the best global motif, you may be interested in discovering other motifs within your data. However, you’ll immediately learn that doing something like <code>top_10_motifs_idx = np.argsort(mp[:, 0])[10]</code> doesn’t actually get you what you want and that’s because this only returns the index locations that are likely going to be close to the global motif!<br>
+<br></p>
+<p>Instead, after identifying the best motif (i.e., the matrix profile location with the smallest value), you first need to exclude the local area (i.e., an exclusion zone) surrounding the motif pair by setting their matrix profile values to <code>np.inf</code> before searching for the next motif. Then, you’ll need to repeat the “exclude-and-search” process for each subsequent motif. Luckily, STUMPY offers two additional functions, namely, <code>stumpy.motifs</code> and <code>stumpy.match</code>, that help simplify this process. While it is beyond the scope of this basic tutorial, we encourage you to check them out!</p>
+</section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<p>And that’s it! You have now loaded in a dataset, ran it through <code>stump</code> using our package, and were able to extract multiple conclusions of existing patterns and anomalies within the two different time series. You can now import this package and use it in your own projects. Happy coding!</p>
+</section>
+<section id="resources" class="slide level2">
+<h2>Resources</h2>
+<p><a href="http://www.cs.ucr.edu/~eamonn/PID4481997_extend_Matrix%20Profile_I.pdf">Matrix Profile I</a></p>
+<p><a href="http://www.cs.ucr.edu/~eamonn/STOMP_GPU_final_submission_camera_ready.pdf">Matrix Profile II</a></p>
+<p><a href="https://stumpy.readthedocs.io/en/latest/">STUMPY Documentation</a></p>
+<p><a href="https://github.com/TDAmeritrade/stumpy">STUMPY Matrix Profile Github Code Repository</a></p>
+
+<div class="quarto-auto-generated-content">
+<p><img src="../img/logos/DidactexLogo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Gem City Tech ML/AI</p>
+</div>
+</div>
+</section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'fast',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
